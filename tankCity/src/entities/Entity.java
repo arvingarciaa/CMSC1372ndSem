@@ -13,8 +13,8 @@ public abstract class Entity{
 	public Image image;
 	public Color color;
 	
-	public static float x;
-	public static float y;
+	public float x;
+	public float y;
 	public float height;
 	public float width;
 	public static int lives;
@@ -40,30 +40,6 @@ public abstract class Entity{
 	};
 	
 	public abstract void update(GameContainer gc, int delta) throws SlickException;
-	
-	public float getEndX() {
-		return (x + width);
-	}
-	
-	public float getEndY() {
-		return (y + height);
-	}
-	
-	public float getHalfWidth() {
-		return (width/2);
-	}
-	
-	public float getHalfHeight() {
-		return (height/2);
-	}
-	
-	public float getCenterX() {
-		return (x + getHalfWidth());
-	}
-	
-	public float getCenterY() {
-		return (y + getHalfHeight());
-	}
 	
 	
 	

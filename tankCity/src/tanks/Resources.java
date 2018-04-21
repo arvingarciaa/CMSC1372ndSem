@@ -1,12 +1,11 @@
 package tanks;
 
-import java.net.URL;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.SpriteSheet;
 
 public class Resources {
 	private static Map<String, Image> images;

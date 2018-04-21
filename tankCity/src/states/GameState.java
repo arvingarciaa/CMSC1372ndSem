@@ -1,6 +1,5 @@
 package states;
 
-import java.awt.Rectangle;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -10,7 +9,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
-import tanks.Resources;
 import entities.Bullet;
 import entities.Player;
 

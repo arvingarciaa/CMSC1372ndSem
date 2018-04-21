@@ -1,9 +1,6 @@
 package entities;
 
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
@@ -19,8 +16,6 @@ public class Player extends Entity {
 	}
 
 	private float speed = 0.1f;
-	private float jumpSpeed = 0.3f;
-	private int jump = 0;
     private String name;
     private InetAddress address;
     private int port;
@@ -56,23 +51,27 @@ public class Player extends Entity {
 		speed = (float) 0.08;
 		bullet_interval += delta;
 		
-		if (input.isKeyDown(Input.KEY_W) && GameState.isUpSafe()==true) {
+		if (input.isKeyDown(Input.KEY_W)) {
 			y-=( speed*delta );
+			if(!GameState.isUpSafe()) y+=( speed*delta );
 			image = Resources.getImage("up");
 			tank_face = 0;
 		}
-		if (input.isKeyDown(Input.KEY_S) && GameState.isDownSafe()==true) {
+		if (input.isKeyDown(Input.KEY_S)) {
 			y+=( speed*delta );
+			if(!GameState.isDownSafe()) y-=( speed*delta );
 			image = Resources.getImage("down");
 			tank_face = 2;
 		}
-		if (input.isKeyDown(Input.KEY_D) && GameState.isRightSafe()==true) {
+		if (input.isKeyDown(Input.KEY_D)) {
 			x+=( speed*delta );
+			if(!GameState.isRightSafe()) x-=( speed*delta );
 			image = Resources.getImage("right");
 			tank_face = 3;
 		}
-		if (input.isKeyDown(Input.KEY_A) && GameState.isLeftSafe()==true) {
+		if (input.isKeyDown(Input.KEY_A)) {
 			x-=( speed*delta );
+			if(!GameState.isLeftSafe()) x+=( speed*delta );
 			image = Resources.getImage("left");
 			tank_face = 1;
 		}
