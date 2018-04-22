@@ -4,7 +4,7 @@
  <tileset firstgid="9" source="backup/untitled.tsx"/>
  <layer name="solids" width="20" height="15">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACr2SUQoAIQhE1a6w9z9rX4IsM9awsg/mJ+sV2jKzNZwkjONNLWE+B+e/+tj7ooniu+FPX+2hg7W6/+RLkEPxqcTrvhtfzo7VKunr/gDqQfU9wKcw2T91virMN5kNQIGJebAEAAA=
+   H4sIAAAAAAAACr2SwQoAIQhE1f7/nzsNyOJYQ7IP5pL1Cm2Z2RoOCON4UwPM58X5Vx97XzRRfDf86cs99GIt7z/5QOVQfCrxue/Gh9mxWga+7g9UPTj5FCZ96nxVmG8yGynn2nWwBAAA
   </data>
  </layer>
  <layer name="background" width="20" height="15">

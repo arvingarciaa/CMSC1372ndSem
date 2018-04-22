@@ -1,29 +1,59 @@
 package states;
 
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
 import entities.Bullet;
 import entities.Player;
+import tanks.Constants;
 
 public class GameState extends BasicGameState{
 	public static TiledMap map;
 	public static int solidsLayer;
 	public static int objectLayer;
 	private static Player tank;
+	private boolean blocked[][];
+	private static ArrayList<Rectangle> blocks;
+	private int tileSize = 32;
+	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
 		map = new TiledMap("res/map.tmx","res");
 		tank = new Player();
 		solidsLayer = map.getLayerIndex("solids");
-		//objectLayer = map.getLayerIndex("objects");
+		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
+		
+		for(int i = 0; i < map.getWidth(); i++) {
+		    for(int j = 0; j < map.getHeight(); j++) {
+
+		        // Read a Tile
+		        int tileID = map.getTileId(i, j, solidsLayer);
+		        
+		        // Get the value of the Property named "blocked"
+		        String value = map.getTileProperty(tileID, "blocked", "false");
+
+		        // If the value of the Property is "true"...
+		        if(value.equals("true")) {
+
+		            // We set that index of the TileMap as blocked
+		            blocked[i][j] = true;
+
+		            // And create the collision Rectangle
+		            blocks.add(new Rectangle((float)i * tileSize, (float)j * tileSize, tileSize, tileSize));
+		        }
+		    }
+		}
+
 		
 	}
 
@@ -54,7 +84,7 @@ public class GameState extends BasicGameState{
 		tank.update(gc, delta);
 		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
 			s.enterState(States.MENU);
-		}
+		} 
 	}
 
 	@Override
@@ -98,6 +128,16 @@ public class GameState extends BasicGameState{
 			return false;
 		}
 	}
+	
+	public static boolean intersects(Rectangle player) {
+		for(Rectangle ret : blocks) {
+		    if(player.intersects(ret)) {
+		        return true;
+		    }
+		}
+		return false;
+	}
+
 	
 
 }

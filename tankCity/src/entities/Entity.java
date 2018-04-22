@@ -15,8 +15,8 @@ public abstract class Entity{
 	
 	public float x;
 	public float y;
-	public float height;
-	public float width;
+	public float playerHeight;
+	public float playerWidth;
 	public static int lives;
 	public static int visible;
 	public static int position;
@@ -28,14 +28,14 @@ public abstract class Entity{
 	public Entity(float x, float y, float height, float width) {
 		this.x = x;
 		this.y = y;
-		this.height = height;
-		this.width = width;
+		this.playerHeight = height;
+		this.playerWidth = width;
 	}
 	
 	public abstract void init() throws SlickException;
 	public void render(GameContainer gc, Graphics g) {
 		if (image != null) {
-			image.draw(x,y,width,height,color);
+			image.draw(x,y,playerWidth,playerHeight,color);
 		}
 	};
 	
