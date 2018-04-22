@@ -100,51 +100,17 @@ public class GameState extends BasicGameState{
 		return States.GAME;
 	}
 
-	public static boolean isUpSafe() {
-		int top = (map.getTileId((int)(tank.x/32), (int)(tank.y/32), solidsLayer));
-		if (top == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public static boolean isDownSafe() {
-		int bot = (map.getTileId((int)(tank.x/32), (int)(tank.y/32)+1, solidsLayer));
-		if (bot == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public static boolean isRightSafe() {
-		int right = (map.getTileId((int)(tank.x/32)+1, (int)(tank.y/32)+1, solidsLayer));
-		if (right == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public static boolean isLeftSafe() {
-		int left = (map.getTileId((int)(tank.x/32), (int)(tank.y/32)+1, solidsLayer));
-		if (left == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
 	
-	public static boolean intersects(Rectangle player) {
+	public static boolean intersects(Rectangle rec1) {
 	    for(int i=0; i<blocks.size(); i++){
-	        if(player.intersects(blocks.get(i))){
+	        if(rec1.intersects(blocks.get(i))){
 	            return true;
 	        }
 	    }
 	    return false;
 	}
+	
 
 
 	
