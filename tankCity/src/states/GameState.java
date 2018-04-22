@@ -21,9 +21,9 @@ public class GameState extends BasicGameState{
 	public static int solidsLayer;
 	public static int objectLayer;
 	private static Player tank;
-	private boolean blocked[][];
+	public boolean blocked[][];
 	private static ArrayList<Rectangle> blocks;
-	private int tileSize = 32;
+	public static int tileSize = 32;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -32,6 +32,7 @@ public class GameState extends BasicGameState{
 		tank = new Player();
 		solidsLayer = map.getLayerIndex("solids");
 		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
+		blocks = new ArrayList<Rectangle>();
 		
 		for(int i = 0; i < map.getWidth(); i++) {
 		    for(int j = 0; j < map.getHeight(); j++) {
@@ -49,11 +50,16 @@ public class GameState extends BasicGameState{
 		            blocked[i][j] = true;
 
 		            // And create the collision Rectangle
-		            blocks.add(new Rectangle((float)i * tileSize, (float)j * tileSize, tileSize, tileSize));
+		            blocks.add(new Rectangle(i * tileSize, j * tileSize, tileSize, tileSize));
 		        }
 		    }
 		}
 
+		for(int i = 0; i < map.getWidth(); i++) {
+		    for(int j = 0; j < map.getHeight(); j++) {
+		        System.out.println("blocked[" + i + "][" + j + "] = " + blocked[i][j]);
+		    }
+		}
 		
 	}
 
@@ -70,6 +76,7 @@ public class GameState extends BasicGameState{
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		
+		/*
 		//TESTERS
 		//for up
 		System.out.print("Up: " + map.getTileId((int)(tank.x/32), (int)(tank.y/32), solidsLayer) );
@@ -79,7 +86,7 @@ public class GameState extends BasicGameState{
 		System.out.print(" Right: " + map.getTileId((int)(tank.x/32)+1, (int)(tank.y/32)+1, solidsLayer));	
 		//for left
 		System.out.println(" Left: " + map.getTileId((int)(tank.x/32), (int)(tank.y/32)+1, solidsLayer) + " x: " + ((int)(tank.x/32)) + " y: " + ((int)(tank.y/32)));
-
+		 */
 		
 		tank.update(gc, delta);
 		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
@@ -128,16 +135,19 @@ public class GameState extends BasicGameState{
 			return false;
 		}
 	}
-	/*
+	
+	
 	public static boolean intersects(Rectangle player) {
-		for(Rectangle ret : blocks) {
-		    if(player.intersects(ret)) {
-		        return true;
-		    }
-		}
-		return false;
+	    for(int i=0; i<blocks.size(); i++){
+	        if(player.intersects(blocks.get(i))){
+	            return true;
+	        }
+	    }
+	    return false;
 	}
-	*/
+
+
+	
 
 	
 
