@@ -57,32 +57,32 @@ public class Player extends Entity {
 		float deltaY = y;
 		
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
-			deltaY-=( speed*delta );
-			//if(!GameState.isUpSafe()) y+=( speed*delta );
+			y-=( speed*delta );
+			if(!GameState.isUpSafe()) y+=( speed*delta );
 			image = Resources.getImage("up");
 			tank_face = 0;
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
-			deltaY+=( speed*delta );
-			//if(!GameState.isDownSafe()) y-=( speed*delta );
+			y+=( speed*delta );
+			if(!GameState.isDownSafe()) y-=( speed*delta );
 			image = Resources.getImage("down");
 			tank_face = 2;
 		}
 		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
-			deltaX+=( speed*delta );
-			//if(!GameState.isRightSafe()) x-=( speed*delta );
+			x+=( speed*delta );
+			if(!GameState.isRightSafe()) x-=( speed*delta );
 			image = Resources.getImage("right");
 			tank_face = 3;
 		}
 		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
-			deltaX-=( speed*delta );
-			//if(!GameState.isLeftSafe()) x+=( speed*delta );
+			x-=( speed*delta );
+			if(!GameState.isLeftSafe()) x+=( speed*delta );
 			image = Resources.getImage("left");
 			tank_face = 1;
 		}
 		
 		float clipX = x;
-		
+		/*
 		collision.setLocation(deltaX,y);
 	    if(!GameState.intersects(collision)){
 	        x = deltaX;
@@ -90,7 +90,7 @@ public class Player extends Entity {
 	    collision.setLocation(clipX,deltaY);
 	    if(!GameState.intersects(collision)){
 	        y = deltaY;
-	    }
+	    }*/
 
 		
 		if(bullet_interval > FIRE_RATE && input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {

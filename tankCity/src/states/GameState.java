@@ -128,7 +128,7 @@ public class GameState extends BasicGameState{
 			return false;
 		}
 	}
-	
+	/*
 	public static boolean intersects(Rectangle player) {
 		for(Rectangle ret : blocks) {
 		    if(player.intersects(ret)) {
@@ -137,6 +137,7 @@ public class GameState extends BasicGameState{
 		}
 		return false;
 	}
+	*/
 
 	
 
