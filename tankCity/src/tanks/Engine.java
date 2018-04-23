@@ -38,6 +38,7 @@ public class Engine extends StateBasedGame{
 		new Resources();
 		this.addState(new MenuState());
 		this.addState(new GameState());
+		this.addState(new ManualState());
 	}
 
 }
