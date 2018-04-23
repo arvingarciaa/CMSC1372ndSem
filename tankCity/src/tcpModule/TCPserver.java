@@ -74,10 +74,10 @@ public class TCPserver extends Thread {
 		}
 	}
 	
-	public static void main(String args[]) {
-		TCPserver mTCPserver = new TCPserver(Integer.parseInt(args[0]));
-		mTCPserver.start();
-	}
+//	public static void main(String args[]) {
+//		TCPserver mTCPserver = new TCPserver(Integer.parseInt(args[0]));
+//		mTCPserver.start();
+//	}
 }
 
 class InputReader extends Thread {

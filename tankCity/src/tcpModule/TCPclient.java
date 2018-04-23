@@ -76,8 +76,8 @@ public class TCPclient extends Thread {
 		
 	}
 	
-	public static void main(String args[]) {
-		TCPclient mTCPclient = new TCPclient(args[0],args[1],Integer.parseInt(args[2]));
-		mTCPclient.start();
-	}
+//	public static void main(String args[]) {
+//		TCPclient mTCPclient = new TCPclient(args[0],args[1],Integer.parseInt(args[2]));
+//		mTCPclient.start();
+//	}
 }
