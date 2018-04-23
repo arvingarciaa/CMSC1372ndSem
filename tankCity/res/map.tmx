@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" infinite="0" nextobjectid="16">
  <tileset firstgid="1" source="../../../137/CMSC137-master/tankCity/res/tileSet.tsx"/>
- <tileset firstgid="9" source="../../../137/CMSC137-master/tankCity/res/backup/untitled.tsx"/>
  <layer name="background" width="20" height="15">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAACmNhYGBgGcWjeBSP4iGAAUhlSrKwBAAA
