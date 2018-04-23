@@ -51,7 +51,7 @@ public class Player extends Entity {
 		Input input = gc.getInput();
 		speed = (float) 0.08;
 		bullet_interval += delta;
-		Rectangle collision = new Rectangle(x,y,playerWidth,playerHeight);
+		Rectangle playerBox = new Rectangle(x,y,playerWidth,playerHeight);
 
 		float deltaX = x;
 		float deltaY = y;
@@ -79,12 +79,12 @@ public class Player extends Entity {
 		
 		float clipX = x;
 		
-		collision.setLocation(deltaX,y);
-	    if(!GameState.intersects(collision)){
+		playerBox.setLocation(deltaX,y);
+	    if(!GameState.intersects(playerBox)){
 	        x = deltaX;
 	    }
-	    collision.setLocation(clipX,deltaY);
-	    if(!GameState.intersects(collision)){
+	    playerBox.setLocation(clipX,deltaY);
+	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
 	    }
 

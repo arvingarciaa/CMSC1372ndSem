@@ -9,6 +9,7 @@
  <tile id="1">
   <properties>
    <property name="blocked" value="true"/>
+   <property name="destroyable" value="true"/>
   </properties>
  </tile>
  <tile id="2">

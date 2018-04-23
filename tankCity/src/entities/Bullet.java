@@ -36,10 +36,11 @@ public class Bullet {
 			System.out.println("pos.getX() = " + pos.getX() + " pos.getY() = " + pos.getY());
 			bulletRectangle.setLocation(pos.getX(), pos.getY());
 			
-			if(!GameState.intersects(bulletRectangle)){
+			if(!GameState.hitsWall(bulletRectangle)){
 				pos.add(realSpeed);
 		    } else {
 		    	active = false;
+		    	//GameState.map.getCell
 		    }
 			
 			

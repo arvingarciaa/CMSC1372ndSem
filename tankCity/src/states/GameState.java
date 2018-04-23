@@ -24,6 +24,8 @@ public class GameState extends BasicGameState{
 	public boolean blocked[][];
 	private static ArrayList<Rectangle> blocks;
 	public static int tileSize = 32;
+
+
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -67,7 +69,6 @@ public class GameState extends BasicGameState{
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		map.render(0,0,0,0,640,480);
 		tank.render(gc,g);	//renders the tank
-		//g.drawRect(tank.x,tank.y,32,32);
 		for(Bullet b: tank.bullets) {	//pre-renders the bullets
 			b.render(gc,g);
 		}
@@ -111,10 +112,20 @@ public class GameState extends BasicGameState{
 	    return false;
 	}
 	
-
-
-	
-
-	
-
+	public static boolean hitsWall(Rectangle rec1) {
+		 for(int i=0; i<blocks.size(); i++){
+		        if(rec1.intersects(blocks.get(i))){
+		        	blocks.remove(i);
+		            return true;
+		        }
+		    }
+		    return false;
+		}
 }
+
+
+	
+
+	
+
+
