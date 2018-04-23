@@ -1,4 +1,4 @@
-package udpmodule;
+package udpModule;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -49,10 +49,7 @@ public class UDPserver extends Thread{
         int port = receivePacket.getPort();
         if(data.startsWith("CONNECT")) {
         	String[] name = data.trim().split(" ");
-        	//addPlayer(name[1], address, port);
-        	send("ACK", address, port);
-			sendToAll(name[1] + " is now connected.");
-			Log.info(name[1] + " is now connected.");
+        	addPlayer(name[1], address, port);
         	//create establish client connection
         }else {
         	sendToAll(data);
@@ -72,19 +69,20 @@ public class UDPserver extends Thread{
 		}
 	}//broadcast to all clients
 	
-//	public void addPlayer(String name, InetAddress address, int port) {
-//		try {
-//			if(players.get(name)==null) {
-//				send("ACK", address, port);
-//				sendToAll(name + " is now connected.");
-//				//players.put(name, new Player());
-//			}else {
-//				send("Username already exists!", address, port);
-//			}//checks availability of username
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//	}//problem instantiating players
+	public void addPlayer(String name, InetAddress address, int port) {
+		try {
+			if(players.get(name)==null) {
+				send("ACK", address, port);
+				sendToAll(name + " is now connected.");
+				//players.put(name, new Player(name, address, port));
+				Log.info(name + " has joined the game");
+			}else {
+				send("Username already exists!", address, port);
+			}//checks availability of username
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}//problem instantiating players
 	
 	public void run() {
         Log.info("Game server started.");
@@ -93,21 +91,21 @@ public class UDPserver extends Thread{
         }
 	}//run server continuously
 	
-	public static void main(String[] args) throws Exception{
-		int port = 0;
-		if(args.length < 1) {
-			System.err.println("Error: Include a port number.");
-			System.exit(1);
-		}
-		try {
-			port = Integer.parseInt(args[0]);
-		}
-		catch(NumberFormatException e) {
-			System.err.println("Error: Argument not an integer.");
-			System.exit(1);
-		}
-		UDPserver udpserver = new UDPserver(port);
-		udpserver.start();
-	}
+//	public static void main(String[] args) throws Exception{
+//		int port = 0;
+//		if(args.length < 1) {
+//			System.err.println("Error: Include a port number.");
+//			System.exit(1);
+//		}
+//		try {
+//			port = Integer.parseInt(args[0]);
+//		}
+//		catch(NumberFormatException e) {
+//			System.err.println("Error: Argument not an integer.");
+//			System.exit(1);
+//		}
+//		UDPserver udpserver = new UDPserver(port);
+//		udpserver.start();
+//	}
 }
-/*Reference:GameOfTanks*/
+/*Reference:Janoras, et.al, (2017) GameOfTanks*/

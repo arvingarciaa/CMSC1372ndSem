@@ -1,7 +1,7 @@
 package tanks;
 
 import tcpModule.TCPserver;
-import udpmodule.UDPserver;
+import udpModule.UDPserver;
 
 
 public class Servers {
