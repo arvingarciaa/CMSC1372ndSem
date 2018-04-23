@@ -1,11 +1,9 @@
 package entities;
 
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import tanks.Resources;
@@ -19,8 +17,6 @@ public class Player extends Entity {
 	}
 
 	private float speed = 0.1f;
-	private float jumpSpeed = 0.3f;
-	private int jump = 0;
     private String name;
     private InetAddress address;
     private int port;
@@ -40,8 +36,8 @@ public class Player extends Entity {
 		x = 48;
 		y = 400;
 		// width height of the player
-		width = 32;
-		height = 32;
+		playerWidth = 31;
+		playerHeight = 31;
 		image = Resources.getImage("up");
 		visible = 1;
 		bullets = new Bullet[2];	//increase to add more bullets
@@ -55,29 +51,46 @@ public class Player extends Entity {
 		Input input = gc.getInput();
 		speed = (float) 0.08;
 		bullet_interval += delta;
+		Rectangle collision = new Rectangle(x,y,playerWidth,playerHeight);
+
+		float deltaX = x;
+		float deltaY = y;
 		
-		if (input.isKeyDown(Input.KEY_W) && GameState.isUpSafe()==true) {
-			y-=( speed*delta );
+		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
 			image = Resources.getImage("up");
 			tank_face = 0;
+	        deltaY -= delta * speed;
 		}
-		if (input.isKeyDown(Input.KEY_S) && GameState.isDownSafe()==true) {
-			y+=( speed*delta );
+		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
+			deltaY += delta * speed;
 			image = Resources.getImage("down");
 			tank_face = 2;
 		}
-		if (input.isKeyDown(Input.KEY_D) && GameState.isRightSafe()==true) {
-			x+=( speed*delta );
+		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
+			deltaX += speed*delta;
 			image = Resources.getImage("right");
 			tank_face = 3;
 		}
-		if (input.isKeyDown(Input.KEY_A) && GameState.isLeftSafe()==true) {
-			x-=( speed*delta );
+		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
+			deltaX -= speed*delta;
 			image = Resources.getImage("left");
 			tank_face = 1;
 		}
 		
+		float clipX = x;
+		
+		collision.setLocation(deltaX,y);
+	    if(!GameState.intersects(collision)){
+	        x = deltaX;
+	    }
+	    collision.setLocation(clipX,deltaY);
+	    if(!GameState.intersects(collision)){
+	        y = deltaY;
+	    }
+
+		
 		if(bullet_interval > FIRE_RATE && input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+			
 			if(tank_face == 0) bullets[current] = new Bullet(new Vector2f(x+22,y), new Vector2f(0,-200));
 			if(tank_face == 1) bullets[current] = new Bullet(new Vector2f(x,y+22), new Vector2f(-200, 0));
 			if(tank_face == 2) bullets[current] = new Bullet(new Vector2f(x+22,y+32), new Vector2f(0, 200));
@@ -94,7 +107,7 @@ public class Player extends Entity {
 		
 	}
 
-    /**
+	/**
 	 * Returns the address
 	 * @return
 	 */
