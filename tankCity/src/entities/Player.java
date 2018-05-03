@@ -1,6 +1,8 @@
 package entities;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
@@ -24,7 +26,9 @@ public class Player extends Entity {
     private int current = 0;
     private static int FIRE_RATE = 500;
     private int bullet_interval;
+    private Image grass;
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
+    private int score;
     //   public Player(GameState gameState){
  //       super();
  //       this.gameState = gameState;
@@ -38,15 +42,22 @@ public class Player extends Entity {
 		// width height of the player
 		playerWidth = 31;
 		playerHeight = 31;
+		score = 0;
 		image = Resources.getImage("up");
 		visible = 1;
 		bullets = new Bullet[2];	//increase to add more bullets
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i] =  new Bullet();
 		}
+
+		grass = new Image("res/grass.png");
 		
 	}
 	
+	protected void paintComponent(Graphics g) {
+        g.drawImage(grass, 0, 0, null);
+    }
+
 	public void update(GameContainer gc, int delta) throws SlickException {
 		Input input = gc.getInput();
 		speed = (float) 0.08;
@@ -79,11 +90,12 @@ public class Player extends Entity {
 		
 		float clipX = x;
 		
+		//checker for wall Y collision
 		playerBox.setLocation(deltaX,y);
 	    if(!GameState.intersects(playerBox)){
 	        x = deltaX;
 	    }
-	    playerBox.setLocation(clipX,deltaY);
+	    playerBox.setLocation(clipX,deltaY);  //checker for wall X collision
 	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
 	    }
