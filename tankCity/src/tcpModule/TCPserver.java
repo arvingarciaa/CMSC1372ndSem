@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.newdawn.slick.util.Log;
-
 public class TCPserver extends Thread {
 	private ServerSocket serverSocket = null;
 	private HashMap<String,OutputStream> clientOutputStreams = new HashMap<>();
@@ -13,10 +11,10 @@ public class TCPserver extends Thread {
 	//constructor
 	public TCPserver(int port) {
 		try {
-			serverSocket = new ServerSocket(port);
-			serverSocket.setSoTimeout(99999999);
+			this.serverSocket = new ServerSocket(port);
+			this.serverSocket.setSoTimeout(99999999);
         } catch (IOException e) {
-        	Log.info(e.toString());
+        	System.out.println("Error 1: "+e.toString());
 			System.exit(MAX_PRIORITY);
 		}
 	}
@@ -24,10 +22,10 @@ public class TCPserver extends Thread {
 	//thread for accepting connection from clients
 	@Override
     public void run() {
-        while (serverSocket != null) {
-            Log.info("Waiting for more players...");
+        while (this.serverSocket != null) {
+            System.out.println("Waiting for players...");
 			try {
-				Socket clientSocket = serverSocket.accept();
+				Socket clientSocket = this.serverSocket.accept();
 	            // add new client to the collection of clients
 	            InputStream clientInputStream = clientSocket.getInputStream();
 	            BufferedReader clientBufferedReader = new BufferedReader(new InputStreamReader(clientInputStream));
@@ -37,60 +35,76 @@ public class TCPserver extends Thread {
 	            String[] words = data.split(" ");
 	            if (words[0].equals("CONNECT")) {
 	            	String clientName = words[1];
-	            	data = clientName + " joined the game.";
-	            	Log.info(data);
-	            	sendToClients(data+"\n");
-	            	this.clientOutputStreams.put(clientName, clientOutputStream);
-	            	clientOutputStream.write("You joined the game.\n".getBytes());
+	            	String msg = "";
+//	            	check if the user name is already used
+	            	if (this.clientOutputStreams.get(clientName) == null) {
+	            		data = clientName + " joined the game.";
+		            	System.out.println(data);
+		            	this.sendToClients(data+"\n");
+		            	this.clientOutputStreams.put(clientName, clientOutputStream);
+		            	msg = "You successfully joined the game " + clientName + ".\n";
+		            	clientOutputStream.write(msg.getBytes());
+
+			            //create new thread for reading each new client's inputs
+			            new InputReader(clientName, clientBufferedReader, this).start();
+		            	Thread.currentThread().sleep(1000);
+	            	} else {
+	            		msg = clientName + " is already in use.\n";
+	            		System.out.print(msg);
+	            		clientOutputStream.write(("USED " + msg).getBytes());
+	            	}
 	            }
-	            
-	            //create new thread for reading each new client's inputs
-	            new InputReader(clientBufferedReader, this).start();
-            	Thread.sleep(1000);
 			} catch (Exception e) {
-	        	Log.info(e.toString());
+	        	System.out.println("Error 2: "+e.toString());
 				System.exit(MAX_PRIORITY);
 			}        
         }
         try {
-			serverSocket.close();
+        	this.serverSocket.close();
 		} catch (IOException e) {
-			Log.info(e.toString());
+			System.out.println("Error 3: "+e.toString());
 			System.exit(MAX_PRIORITY);
 		}
     }
 	
 	public void sendToClients(String data) {
-		Object[] clientNames = clientOutputStreams.keySet().toArray();
-		for(int i=0; i<clientOutputStreams.size(); i++) {
-			if(clientOutputStreams.get(clientNames[i]) != null) {
+		Object[] clientNames = this.clientOutputStreams.keySet().toArray();
+		for(int i=0; i<this.clientOutputStreams.size(); i++) {
+			if(this.clientOutputStreams.get(clientNames[i]) != null) {
 				try {
-					clientOutputStreams.get(clientNames[i]).write(data.getBytes());
+					this.clientOutputStreams.get(clientNames[i]).write(data.getBytes());
 				} catch (IOException e) {
-					Log.info(e.toString());
-					System.exit(MAX_PRIORITY);
+					System.out.println("Error 4: "+e.toString());
+//					System.exit(MAX_PRIORITY);
 				}
 			}
 		}
 	}
 	
-//	public static void main(String args[]) {
-//		TCPserver mTCPserver = new TCPserver(Integer.parseInt(args[0]));
-//		mTCPserver.start();
-//	}
+	public void deleteClient(String clientName) {
+		this.clientOutputStreams.remove(clientName);
+	}
+	
+	public static void main(String args[]) {
+		TCPserver mTCPserver = new TCPserver(Integer.parseInt(args[0]));
+		mTCPserver.start();
+	}
 }
 
 class InputReader extends Thread {
 	private TCPserver serverSocket;
 	private BufferedReader clientBufferedReader;
+	private String clientName;
 	
 	//constructor
-	public InputReader(BufferedReader clientBufferedReader, TCPserver serverSocket) {
+	public InputReader(String clientName, BufferedReader clientBufferedReader, TCPserver serverSocket) {
 		this.clientBufferedReader = clientBufferedReader;
-		this.serverSocket = serverSocket;       
+		this.serverSocket = serverSocket;  
+		this.clientName = clientName;
 	}
 	
 	//continues reading of client's inputs
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {		
 		while(this.clientBufferedReader != null) {
@@ -103,8 +117,12 @@ class InputReader extends Thread {
 	            } while (data != null);
 			}
 	        catch(Exception e) {
-	        	Log.info(e.toString());
-				System.exit(MAX_PRIORITY);
+	        	String data = clientName+" disconnected.\n";
+	        	System.out.print(data + "Waiting for players...\n");
+	        	this.serverSocket.deleteClient(clientName);
+	        	this.serverSocket.sendToClients(data);
+//				System.exit(MAX_PRIORITY);
+	        	Thread.currentThread().stop();
 	        }
 		}
 	}

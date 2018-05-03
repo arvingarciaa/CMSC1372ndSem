@@ -6,7 +6,11 @@
 	<classpathentry kind="lib" path="C:/Users/Administrator/Desktop/Aj/eclipse/tankCity/Java/jar/jorbis-0.0.15.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Administrator/Desktop/Aj/eclipse/tankCity/Java/jar/lwjgl.jar">
 		<attributes>
+<<<<<<< HEAD
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Administrator/Desktop/Aj/eclipse/tankCity/Java/native/windows"/>
+=======
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/acads/2ndSem17_18/137/CMSC1372ndSem/tankCity/Java/native/windows"/>
+>>>>>>> 414eaf4ae9679783d3d81b1ed9933bd5cf15700e
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Administrator/Desktop/Aj/eclipse/tankCity/Java/jar/slick.jar"/>
