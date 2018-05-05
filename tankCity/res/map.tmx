@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" infinite="0" nextobjectid="16">
- <tileset firstgid="1" source="../../../137/CMSC137-master/tankCity/res/tileSet.tsx"/>
- <layer name="background" width="20" height="15">
+ <tileset firstgid="1" source="tileSet.tsx"/>
+ <layer name="background" width="20" height="15" locked="1">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACmNhYGBgGcWjeBSP4iGAAUhlSrKwBAAA
+   H4sIAAAAAAAAC2NhYGBgGcWjeBSP4iGAAUhlSrKwBAAA
   </data>
  </layer>
- <layer name="solids" width="20" height="15" locked="1">
+ <layer name="solids" width="20" height="15">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACr2SwQoAIQhE1f7/nzsNyOJYQ7IP5pL1Cm2Z2RoOCON4UwPM58X5Vx97XzRRfDf86cs99GIt7z/5QOVQfCrxue/Gh9mxWga+7g9UPTj5FCZ96nxVmG8yGynn2nWwBAAA
+   H4sIAAAAAAAAC72SwQoAIQhE1f7/nzsNyOJYQ7IP5pL1Cm2Z2RoOCON4UwPM58X5Vx97XzRRfDf86cs99GIt7z/5QOVQfCrxue/Gh9mxWga+7g9UPTj5FCZ96nxVmG8yGynn2nWwBAAA
   </data>
  </layer>
 </map>
