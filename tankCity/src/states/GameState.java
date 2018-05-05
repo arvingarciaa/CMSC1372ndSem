@@ -32,7 +32,6 @@ public class GameState extends BasicGameState{
 	public boolean blocked[][];
 	public static boolean dest[][];
 	private static ArrayList<Rectangle> blocks;
-	private static ArrayList<Rectangle> destroy;
 	public static int tileSize = 32;
 	public static int collX, collY;
 	private static float alpha = 0;

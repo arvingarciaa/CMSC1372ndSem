@@ -51,6 +51,7 @@ public class Engine extends StateBasedGame{
 		this.addState(new GameState());
 		this.addState(new ManualState());
 		this.addState(new EndState());
+		this.addState(new WaitState());
 	}
 
 }
