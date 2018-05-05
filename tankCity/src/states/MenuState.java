@@ -11,19 +11,27 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import udpModule.UDPclient;
+
 import java.awt.Font;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class MenuState extends BasicGameState{
 	private Image img;
-	private TextField textServer;
-	private TextField textName;
 	private UnicodeFont font;
+	private TextField textFieldServer, textFieldName;
+	public static UDPclient udpclient;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
 		font = getNewFont("Arial", 16);
 		img = new Image("res/logo.png");
+		
+		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);	
+	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
 	}
 
 	@Override
@@ -35,6 +43,8 @@ public class MenuState extends BasicGameState{
 		g.drawString("Instructions", 260, 375);
 		g.drawString("Exit", 295, 410);
 		img.draw(100, 20, 460, 200);
+		textFieldServer.render(gc, g);
+		textFieldName.render(gc, g);
 	}
 
 	@Override
@@ -44,6 +54,18 @@ public class MenuState extends BasicGameState{
 		
 		if ((posX > 260 && posX < 370) && (posY > 117 && posY < 140)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
+				String clientName = textFieldName.getText();
+				InetAddress clientAddress;
+				try {
+					clientAddress = InetAddress.getByName(textFieldServer.getText());
+					int clientport = 9999;
+					udpclient = new UDPclient(clientName, clientAddress, clientport);
+					udpclient.start();
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				s.enterState(States.GAME);
 			}
 		} else if ((posX > 255 && posX < 375) && (posY > 83 && posY < 107)) {

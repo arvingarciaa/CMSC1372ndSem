@@ -1,21 +1,31 @@
 package entities;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
-import tanks.Resources;
+import tanks.*;
 import states.GameState;
+
 import java.net.InetAddress;
+import java.util.Random;
 
-public class Player extends Entity {
+public class Player {
 
-	public Player() throws SlickException {
-		super();
-	}
-
+	public org.newdawn.slick.Image image;
+	public org.newdawn.slick.Color color;
+	
+	public float x;
+	public float y;
+	public float playerHeight;
+	public float playerWidth;
+	public static int lives;
+	public static int visible;
+	public static int position;
+	
 	private float speed = 0.1f;
     private String name;
     private InetAddress address;
@@ -25,16 +35,14 @@ public class Player extends Entity {
     private static int FIRE_RATE = 500;
     private int bullet_interval;
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
-    //   public Player(GameState gameState){
- //       super();
- //       this.gameState = gameState;
- //   }
-
-	@Override
-	public void init() throws SlickException {
-		// x and y location of the player on render
-		x = 48;
-		y = 400;
+    private Random rand = new Random();
+    
+    public Player(String name, InetAddress address, int port) throws SlickException {
+		this.name = name;
+		this.address = address;
+		this.port = port;
+		x = rand.nextInt(Constants.WIDTH);
+		y = rand.nextInt(Constants.HEIGHT);
 		// width height of the player
 		playerWidth = 31;
 		playerHeight = 31;
@@ -44,8 +52,27 @@ public class Player extends Entity {
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i] =  new Bullet();
 		}
-		
 	}
+    
+    public Player(int x, int y) {
+    	this.x = x;
+    	this.y = y;
+		// width height of the player
+		playerWidth = 31;
+		playerHeight = 31;
+		image = Resources.getImage("up");
+		visible = 1;
+		bullets = new Bullet[2];	//increase to add more bullets
+		for(int i = 0; i < bullets.length; i++) {
+			bullets[i] =  new Bullet();
+		}
+    }
+    
+    public void render(GameContainer gc, Graphics g) {
+		if (image != null) {
+			image.draw(x,y,playerWidth,playerHeight,color);
+		}
+	};
 	
 	public void update(GameContainer gc, int delta) throws SlickException {
 		Input input = gc.getInput();

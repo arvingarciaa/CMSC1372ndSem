@@ -1,7 +1,7 @@
 package states;
 
-
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,6 +15,7 @@ import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
 import entities.Player;
 import tanks.Constants;
+import udpModule.UDPclient;
 
 public class GameState extends BasicGameState{
 	public static TiledMap map;
@@ -24,14 +25,17 @@ public class GameState extends BasicGameState{
 	public boolean blocked[][];
 	private static ArrayList<Rectangle> blocks;
 	public static int tileSize = 32;
-
+	private UDPclient udpclient;
+	private int x,y;
+	private Random rand = new Random();
 
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
+		udpclient = MenuState.udpclient;
 		map = new TiledMap("res/map.tmx","res");
-		tank = new Player();
+		
 		solidsLayer = map.getLayerIndex("solids");
 		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
 		blocks = new ArrayList<Rectangle>();
@@ -56,12 +60,19 @@ public class GameState extends BasicGameState{
 		        }
 		    }
 		}
+		//randomize x and y pos of tank then check if blocked
+		do {
+			x = rand.nextInt(20)*32;
+			y = rand.nextInt(15)*32;
+			System.out.println("position: " + x + " " + y);
+		}while(blocked[x/32][y/32]==true);
+		tank = new Player(x,y);
 
-		for(int i = 0; i < map.getWidth(); i++) {
-		    for(int j = 0; j < map.getHeight(); j++) {
-		        System.out.println("blocked[" + i + "][" + j + "] = " + blocked[i][j]);
-		    }
-		}
+//		for(int i = 0; i < map.getWidth(); i++) {
+//		    for(int j = 0; j < map.getHeight(); j++) {
+//		        System.out.println("blocked[" + i + "][" + j + "] = " + blocked[i][j]);
+//		    }
+//		}
 		
 	}
 
@@ -101,8 +112,6 @@ public class GameState extends BasicGameState{
 		return States.GAME;
 	}
 
-	
-	
 	public static boolean intersects(Rectangle rec1) {
 	    for(int i=0; i<blocks.size(); i++){
 	        if(rec1.intersects(blocks.get(i))){
@@ -122,10 +131,5 @@ public class GameState extends BasicGameState{
 		    return false;
 		}
 }
-
-
-	
-
-	
 
 
