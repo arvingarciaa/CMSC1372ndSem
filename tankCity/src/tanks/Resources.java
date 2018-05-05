@@ -18,6 +18,7 @@ public class Resources {
 			images.put("down", loadImage("res/down2.png"));
 			images.put("left", loadImage("res/left2.png"));
 			images.put("right", loadImage("res/right2.png"));
+			images.put("grass", loadImage("res/grass.png"));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

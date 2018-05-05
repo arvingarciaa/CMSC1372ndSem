@@ -21,18 +21,19 @@ public abstract class Entity{
 	public static int visible;
 	public static int position;
 	
-	public Entity() throws SlickException{
+	public Entity(){
+		System.out.println("effin bs");
 		init();
 	}
 	
-	public Entity(float x, float y, float height, float width) {
-		this.x = x;
-		this.y = y;
-		this.playerHeight = height;
-		this.playerWidth = width;
-	}
+//	public Entity(float x, float y, float height, float width) {
+//		this.x = x;
+//		this.y = y;
+//		this.playerHeight = height;
+//		this.playerWidth = width;
+//	}
 	
-	public abstract void init() throws SlickException;
+	public abstract void init();
 	public void render(GameContainer gc, Graphics g) {
 		if (image != null) {
 			image.draw(x,y,playerWidth,playerHeight,color);

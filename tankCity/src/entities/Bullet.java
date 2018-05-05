@@ -33,7 +33,6 @@ public class Bullet {
 		if(active) {
 			Vector2f realSpeed = speed.copy();
 			realSpeed.scale(delta/1000.0f);
-			System.out.println("pos.getX() = " + pos.getX() + " pos.getY() = " + pos.getY());
 			bulletRectangle.setLocation(pos.getX(), pos.getY());
 			
 			if(!GameState.hitsWall(bulletRectangle)){
@@ -54,7 +53,6 @@ public class Bullet {
 	
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		if(active) {
-			g.setColor(Color.red);
 			g.fillOval(pos.getX()-10, pos.getY()-10, 10, 10);			
 		}
 	}	

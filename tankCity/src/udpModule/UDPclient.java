@@ -17,11 +17,11 @@ public class UDPclient extends Thread{
 	InetAddress address = null;
 	int PORT;
 
-	public UDPclient(String name, String ipAddress, int PORT) {
+	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
 		this.name = name;
 		try {
-			address = InetAddress.getByName(ipAddress);
+			address = ipAddress;
 			socket = new DatagramSocket();
 			socket.setSoTimeout(5000);
 		} catch(Exception e) {
@@ -38,7 +38,9 @@ public class UDPclient extends Thread{
 			if(text.startsWith("ACK") ) {
 				CONNECTION=true;
 				System.out.println(CONNECTION);
-			}//connect to server
+			}else if(text.startsWith("NAK")){
+				System.out.println("Username already exists!");
+			}
 	    } catch(SocketTimeoutException e) {
 	    } catch(Exception e) {
 	    	e.printStackTrace();
@@ -46,7 +48,7 @@ public class UDPclient extends Thread{
 	}
 	
 	public void send(String text) {
-		text = text + " " +this.name;
+		text = text + " " + this.name;
 	    byte[] data = new byte[1024];
 	    data = text.getBytes();
 	    DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, PORT);
@@ -70,7 +72,13 @@ public class UDPclient extends Thread{
 		}
 
 		while(true) {				
-			receive();
+			try {
+				receive();
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//continuously receive from server
 	}
 	
