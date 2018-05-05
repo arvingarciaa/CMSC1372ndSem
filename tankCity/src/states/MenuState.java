@@ -12,6 +12,7 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import tanks.Engine;
 import udpModule.UDPclient;
 
 import java.awt.Font;
@@ -45,6 +46,7 @@ public class MenuState extends BasicGameState{
 		img.draw(100, 20, 460, 200);
 		textFieldServer.render(gc, g);
 		textFieldName.render(gc, g);
+		
 	}
 
 	@Override
@@ -56,16 +58,15 @@ public class MenuState extends BasicGameState{
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();
 				InetAddress clientAddress;
+				udpclient = Engine.udpclient;
 				try {
 					clientAddress = InetAddress.getByName(textFieldServer.getText());
 					int clientport = 9999;
-					udpclient = new UDPclient(clientName, clientAddress, clientport);
-					udpclient.start();
+					Engine.createUdp(clientName, clientAddress, clientport); 
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 				s.enterState(States.GAME);
 			}
 		} else if ((posX > 255 && posX < 375) && (posY > 83 && posY < 107)) {

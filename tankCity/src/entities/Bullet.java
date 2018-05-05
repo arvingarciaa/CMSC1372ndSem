@@ -33,7 +33,7 @@ public class Bullet {
 		if(active) {
 			Vector2f realSpeed = speed.copy();
 			realSpeed.scale(delta/1000.0f);
-			bulletRectangle.setLocation(pos.getX(), pos.getY());
+			bulletRectangle.setLocation(pos.getX()-10, pos.getY()-10);
 			
 			if(!GameState.hitsWall(bulletRectangle)){
 				pos.add(realSpeed);

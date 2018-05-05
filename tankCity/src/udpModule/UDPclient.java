@@ -11,7 +11,7 @@ import org.newdawn.slick.util.Log;
 public class UDPclient extends Thread{
 	DatagramSocket socket = null;
 
-	private String name;
+	public String name;
 	private static boolean CONNECTION = false;
 	
 	InetAddress address = null;
@@ -19,7 +19,7 @@ public class UDPclient extends Thread{
 
 	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
-		this.name = name;
+		this.setPlayerName(name);;
 		try {
 			address = ipAddress;
 			socket = new DatagramSocket();
@@ -27,6 +27,14 @@ public class UDPclient extends Thread{
 		} catch(Exception e) {
 			e.printStackTrace();;
 		}
+	}
+	
+	public String getPlayerName() {
+		return this.name;
+	}
+	
+	public void setPlayerName(String name) {
+		this.name = new String(name);
 	}
 	
 	public void receive() {

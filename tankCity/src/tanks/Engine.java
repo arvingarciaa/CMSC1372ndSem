@@ -1,13 +1,24 @@
 package tanks;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import states.*;
+import udpModule.UDPclient;
 
 public class Engine extends StateBasedGame{
+	public static UDPclient udpclient;
+	public static int score = 0;
+	
+	public static void createUdp (String name, InetAddress clientAddress, int clientport) {
+			udpclient = new UDPclient(name, clientAddress, clientport);
+			udpclient.start();
+	}
 
 	public Engine() {
 		super("Tank City");
@@ -39,6 +50,7 @@ public class Engine extends StateBasedGame{
 		this.addState(new MenuState());
 		this.addState(new GameState());
 		this.addState(new ManualState());
+		this.addState(new EndState());
 	}
 
 }

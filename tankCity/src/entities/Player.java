@@ -45,8 +45,8 @@ public class Player {
 		x = rand.nextInt(Constants.WIDTH);
 		y = rand.nextInt(Constants.HEIGHT);
 		// width height of the player
-		playerWidth = 31;
-		playerHeight = 31;
+		playerWidth = 29;
+		playerHeight = 29;
 		score = 0;
 		image = Resources.getImage("up");
 		visible = 1;
@@ -64,6 +64,7 @@ public class Player {
 		playerHeight = 29;
 		image = Resources.getImage("up");
 		visible = 1;
+		score = 0;
 		bullets = new Bullet[2];	//increase to add more bullets
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i] =  new Bullet();

@@ -10,7 +10,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -19,6 +20,7 @@ import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
 import entities.Player;
 import tanks.Constants;
+import tanks.Engine;
 import tanks.Resources;
 import udpModule.UDPclient;
 
@@ -34,8 +36,9 @@ public class GameState extends BasicGameState{
 	public static int tileSize = 32;
 	public static int collX, collY;
 	private static float alpha = 0;
-	private static Font font;
-	private static TrueTypeFont ttf;
+	private UnicodeFont font;
+	private float textWidth;
+	private String text,scores;
 	private static int pause = 0;
 	private UDPclient udpclient;
 	private int x,y;
@@ -45,7 +48,6 @@ public class GameState extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
-		udpclient = MenuState.udpclient;
 		map = new TiledMap("res/map.tmx","res");
 		
 		solidsLayer = map.getLayerIndex("solids");
@@ -73,8 +75,8 @@ public class GameState extends BasicGameState{
 		    }
 		}
 
-		font = new Font("Verdana", Font.BOLD, 20);
-	    ttf = new TrueTypeFont(font, true);
+		font = getNewFont("Arial", 48);
+
 		
 		//randomize x and y pos of tank then check if blocked
 		do {
@@ -107,7 +109,25 @@ public class GameState extends BasicGameState{
 		    Rectangle rect = new Rectangle (0, 0, 640, 480);
 		    g.setColor(new Color (0.2f, 0.2f, 0.2f, alpha));
 		    g.fill(rect);   
-		    ttf.drawString(320,240,Player.name + ": " + Player.score);
+		    font.loadGlyphs();
+		    udpclient = Engine.udpclient;
+			text = udpclient.getPlayerName() + ": " + Player.score;
+	        textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
+ 
+			text = udpclient.getPlayerName() + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 170, text);
+			 
+			text = udpclient.getPlayerName() + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 240, text);
+			 
+			text = udpclient.getPlayerName() + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 310, text);
+			
+			
 		    if (alpha < 0.5f)
 		        alpha += 0.01f;
 		}
@@ -156,6 +176,13 @@ public class GameState extends BasicGameState{
 		    }
 		    return false;
 		}
+	
+	public UnicodeFont getNewFont(String fontName, int fontSize) {
+		font = new UnicodeFont(new Font(fontName, Font.BOLD, fontSize));
+		font.addGlyphs("@");
+		font.getEffects().add(new ColorEffect(java.awt.Color.white));
+		return (font);
+	}
 }
 
 
