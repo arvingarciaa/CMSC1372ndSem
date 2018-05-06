@@ -10,16 +10,19 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
-
 import entities.Bullet;
 import entities.Player;
 import tanks.Constants;
+import tanks.Engine;
 import tanks.Resources;
+import tcpModule.TCPclient;
 import udpModule.UDPclient;
 
 public class GameState extends BasicGameState{
@@ -30,22 +33,24 @@ public class GameState extends BasicGameState{
 	public boolean blocked[][];
 	public static boolean dest[][];
 	private static ArrayList<Rectangle> blocks;
-	private static ArrayList<Rectangle> destroy;
 	public static int tileSize = 32;
 	public static int collX, collY;
 	private static float alpha = 0;
-	private static Font font;
-	private static TrueTypeFont ttf;
+	private UnicodeFont font;
+	private float textWidth;
+	private String text;
 	private static int pause = 0;
 	private UDPclient udpclient;
+	private TCPclient tcpclient;
 	private int x,y;
 	private Random rand = new Random();
 	public static boolean[][] destroyed = new boolean[20][15];
+	private TextField textFieldChatInput;
+	private String playerName;
+	ArrayList<String> chatMessages;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		// TODO Auto-generated method stub
-		udpclient = MenuState.udpclient;
 		map = new TiledMap("res/map.tmx","res");
 		
 		solidsLayer = map.getLayerIndex("solids");
@@ -53,8 +58,6 @@ public class GameState extends BasicGameState{
 		dest = new boolean[Constants.WIDTH][Constants.HEIGHT];
 		blocks = new ArrayList<Rectangle>();
 		
-		System.out.println("getWidth: " + map.getWidth());
-		System.out.println("getHeight: " + map.getHeight());
 		for(int i = 0; i < map.getWidth(); i++) {
 		    for(int j = 0; j < map.getHeight(); j++) {
 		        // Read a Tile
@@ -72,15 +75,14 @@ public class GameState extends BasicGameState{
 		        }
 		    }
 		}
-		
-		font = new Font("Verdana", Font.BOLD, 20);
-	    ttf = new TrueTypeFont(font, true);
-		
-		//randomize x and y pos of tank then check if blocked
+
+		font = getNewFont("Arial", 48);
+		textFieldChatInput = new TextField(gc, gc.getDefaultFont(), 0, Constants.TOTAL_HEIGHT-25, 640, 25);
+						
+		//randomize x and y position of tank then check if blocked
 		do {
 			x = rand.nextInt(20)*32;
 			y = rand.nextInt(15)*32;
-			System.out.println("position: " + x + " " + y);
 		}while(blocked[x/32][y/32]==true);
 		tank = new Player(x,y);
 	}
@@ -105,8 +107,26 @@ public class GameState extends BasicGameState{
 		    Rectangle rect = new Rectangle (0, 0, 640, 480);
 		    g.setColor(new Color (0.2f, 0.2f, 0.2f, alpha));
 		    g.fill(rect);   
-		    ttf.drawString(320,240,Player.name + ": " + Player.score);
-		    if (alpha < 0.5f)
+		    font.loadGlyphs();
+		    udpclient = Engine.udpclient;
+		    playerName = udpclient.getPlayerName();
+			text = playerName + ": " + Player.score;
+	        textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
+ 
+			text = playerName + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 170, text);
+			 
+			text = playerName + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 240, text);
+			 
+			text = playerName + ": " + Player.score;
+			textWidth = font.getWidth(text);
+			font.drawString(Constants.WIDTH/2f - textWidth/2f, 310, text);
+			
+			if (alpha < 0.5f)
 		        alpha += 0.01f;
 		}
 		else
@@ -115,18 +135,50 @@ public class GameState extends BasicGameState{
 		        alpha -= 0.01f;
 		    g.setColor(new Color(1.0f,1.0f,1.0f,1.0f));
 		}
+		
+		textFieldChatInput.render(gc, g);
+		
+//		render chat messages
+		int x_position = 15;
+		int y_position = Constants.TOTAL_HEIGHT-50;
+		for(int i=chatMessages.size()-1; i>=0; i--) {
+			if(chatMessages.isEmpty()) break;
+			if (y_position > Constants.HEIGHT)
+				g.drawString(chatMessages.get(i), x_position, y_position);
+			y_position-=13;
+		}
 	}	
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
-		tank.update(gc, delta);
+		tcpclient = Engine.tcpclient;
+		udpclient = Engine.udpclient;
+		//		get the chat messages
+		chatMessages = tcpclient.getMessages();
+				
 		if (gc.getInput().isKeyPressed(Input.KEY_TAB))	//to see score
 			pause++;
+		
+		int mouseX = gc.getInput().getMouseX();
+		int mouseY = gc.getInput().getMouseY();
+		
+		if (!(mouseX>=0 && mouseX<=Constants.WIDTH && mouseY>=Constants.HEIGHT)) {
+			tank.update(gc, delta);
+		}
+		
+		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
+			String data = textFieldChatInput.getText();
+			if (data.length()>0) {
+				data = data + "\n";
+				playerName = udpclient.getPlayerName();
+				Engine.tcpclient.sendToServer(playerName + ": " + data);
+				textFieldChatInput.setText("");
+			}
+		}		
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return States.GAME;
 	}
 
@@ -154,6 +206,14 @@ public class GameState extends BasicGameState{
 		    }
 		    return false;
 		}
+	
+	@SuppressWarnings("unchecked")
+	public UnicodeFont getNewFont(String fontName, int fontSize) {
+		font = new UnicodeFont(new Font(fontName, Font.BOLD, fontSize));
+		font.addGlyphs("@");
+		font.getEffects().add(new ColorEffect(java.awt.Color.white));
+		return (font);
+	}
 }
 
 

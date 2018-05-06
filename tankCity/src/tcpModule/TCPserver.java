@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.newdawn.slick.util.Log;
+
 public class TCPserver extends Thread {
 	private ServerSocket serverSocket = null;
 	private HashMap<String,OutputStream> clientOutputStreams = new HashMap<>();
@@ -22,9 +24,8 @@ public class TCPserver extends Thread {
 	//thread for accepting connection from clients
 	@Override
     public void run() {
-        while (this.serverSocket != null) {
-            System.out.println("Waiting for players...");
-			try {
+		while (this.serverSocket != null) {
+            try {
 				Socket clientSocket = this.serverSocket.accept();
 	            // add new client to the collection of clients
 	            InputStream clientInputStream = clientSocket.getInputStream();
@@ -38,19 +39,19 @@ public class TCPserver extends Thread {
 	            	String msg = "";
 //	            	check if the user name is already used
 	            	if (this.clientOutputStreams.get(clientName) == null) {
-	            		data = clientName + " joined the game.";
-		            	System.out.println(data);
-		            	this.sendToClients(data+"\n");
+	            		data = clientName + " joined the game.\n";
+		            	this.sendToClients(data);
 		            	this.clientOutputStreams.put(clientName, clientOutputStream);
 		            	msg = "You successfully joined the game " + clientName + ".\n";
 		            	clientOutputStream.write(msg.getBytes());
 
 			            //create new thread for reading each new client's inputs
 			            new InputReader(clientName, clientBufferedReader, this).start();
-		            	Thread.currentThread().sleep(1000);
+		            	Thread.currentThread();
+						Thread.sleep(1000);
 	            	} else {
 	            		msg = clientName + " is already in use.\n";
-	            		System.out.print(msg);
+	            		Log.info(" TCPserver: " + msg);
 	            		clientOutputStream.write(("USED " + msg).getBytes());
 	            	}
 	            }
@@ -68,6 +69,7 @@ public class TCPserver extends Thread {
     }
 	
 	public void sendToClients(String data) {
+		Log.info(" TCPserver: " + data);
 		Object[] clientNames = this.clientOutputStreams.keySet().toArray();
 		for(int i=0; i<this.clientOutputStreams.size(); i++) {
 			if(this.clientOutputStreams.get(clientNames[i]) != null) {
@@ -113,15 +115,13 @@ class InputReader extends Thread {
 	            do {
 	            	data = this.clientBufferedReader.readLine();
 	            	if(data != null && data.length() > 0) 
-	            		this.serverSocket.sendToClients(data);
+	            		this.serverSocket.sendToClients(data+"\n");
 	            } while (data != null);
 			}
 	        catch(Exception e) {
 	        	String data = clientName+" disconnected.\n";
-	        	System.out.print(data + "Waiting for players...\n");
 	        	this.serverSocket.deleteClient(clientName);
 	        	this.serverSocket.sendToClients(data);
-//				System.exit(MAX_PRIORITY);
 	        	Thread.currentThread().stop();
 	        }
 		}

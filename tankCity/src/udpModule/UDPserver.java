@@ -46,13 +46,11 @@ public class UDPserver extends Thread{
 	        serverSocket.receive(receivePacket); 	   		
 	   	} catch(Exception e) {};
 
-        try {
+	   	try {
         	dataParser(receivePacket);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
 	}
 
 		public void dataParser(DatagramPacket receivePacket) throws UnknownHostException {
@@ -97,7 +95,7 @@ public class UDPserver extends Thread{
 				send("ACK", address, port);
 				sendToAll(name + " is now connected.");
 				players.put(name, new PlayerInfo(name, address, port));
-				Log.info(name + " has joined the game");
+				Log.info(" " + name + " has joined the game.");
 			}else {
 				send("NAK NNA", address, port);
 			}//checks availability of username
@@ -122,7 +120,7 @@ public class UDPserver extends Thread{
 	}
 	
 	public void run() {
-        Log.info("Game server started.");
+        Log.info(" Game server started.");
         while(true) {        	
         	if(gameState == 0) {
         		//wait for players
