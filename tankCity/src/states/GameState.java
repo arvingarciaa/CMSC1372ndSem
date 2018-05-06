@@ -60,13 +60,14 @@ public class GameState extends BasicGameState{
 		        }
 		    }
 		}
-		//randomize x and y pos of tank then check if blocked
+		//randomize x and y pos of tank and check if blocked
 		do {
 			x = rand.nextInt(20)*32;
 			y = rand.nextInt(15)*32;
 			System.out.println("position: " + x + " " + y);
 		}while(blocked[x/32][y/32]==true);
 		tank = new Player(x,y);
+		//send init pos to server
 
 //		for(int i = 0; i < map.getWidth(); i++) {
 //		    for(int j = 0; j < map.getHeight(); j++) {

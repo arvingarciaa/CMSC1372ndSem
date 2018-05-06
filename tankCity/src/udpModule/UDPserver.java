@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import org.newdawn.slick.util.Log;
@@ -45,22 +46,37 @@ public class UDPserver extends Thread{
 	        serverSocket.receive(receivePacket); 	   		
 	   	} catch(Exception e) {};
 
-        String data = new String(receivePacket.getData());
-        InetAddress address = receivePacket.getAddress();
-        int port = receivePacket.getPort();
-        if(data.startsWith("CONNECT")) {
-        	if(gameState == 0) {
-            	String[] name = data.trim().split(" ");
-            	addPlayer(name[1], address, port);
-            	System.out.println(players.keySet());
-            	//establish client connection
-            }else {
-            	send("Game in progress. You cannot connect at the moment.", address, port);
-            }
-        }else {
-        	sendToAll(data);
-        }
+        try {
+        	dataParser(receivePacket);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 	}
+
+		public void dataParser(DatagramPacket receivePacket) throws UnknownHostException {
+			String data = new String(receivePacket.getData());
+	        InetAddress address = receivePacket.getAddress();
+	        int port = receivePacket.getPort();
+	        String[] text = data.trim().split(" ");
+			if(text[0]=="CONNECT") {
+	        	if(gameState == 0) {	            	
+	            	addPlayer(text[1], address, port);
+	            	System.out.println(players.keySet());
+	            	//establish client connection
+	            }else {
+	            	send("NAK GIP", address, port);
+	            }
+			}else if(text[0]=="HIT") {
+				//tank hit by another tank
+				//remove destroyed tank from game
+				//update score
+				removePlayer(text[2]);
+			}else {
+				sendToAll(data);
+			}
+		}//process all the data received from clients
 	
 	public void sendToAll(String text) {
 		Object[] names = players.keySet().toArray();
@@ -83,16 +99,27 @@ public class UDPserver extends Thread{
 				players.put(name, new PlayerInfo(name, address, port));
 				Log.info(name + " has joined the game");
 			}else {
-				send("NAK", address, port);
+				send("NAK NNA", address, port);
 			}//checks availability of username
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-	}//problem instantiating players
+	}
 	
 	public void removePlayer(String name) {
+		PlayerInfo dead = players.get(name);
+		send("Game Over", dead.getAddress(), dead.getPort());
+		System.out.println(players.keySet());
 		players.remove(name);
+		System.out.println(players.keySet());
+		if(players.size() == 1) {
+			gameState = 3;//endgame
+		}
 	}//remove dead tanks
+	
+	public void generatePowerUps() {
+		
+	}
 	
 	public void run() {
         Log.info("Game server started.");
@@ -110,7 +137,8 @@ public class UDPserver extends Thread{
         		receive();
         	}else if(gameState == 2) {
         		//game in progress
-        	}else {
+        		receive();
+        	}else if(gameState == 3){
         		//end game
         	}
         }
