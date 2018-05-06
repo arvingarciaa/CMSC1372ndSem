@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class TCPclient extends Thread {
 	private Socket clientSocket;
@@ -17,18 +17,13 @@ public class TCPclient extends Thread {
 	private InputStream clientInputStream;
 	private OutputStream clientOutputStream;
 	private BufferedReader clientBufferedReader;
+	private ArrayList<String> chatMessages = new ArrayList<>();
 		
 	//constructor
-	public TCPclient(String name, String address, int port) {
+	public TCPclient(String name, InetAddress clientAddress, int port) {
 		this.name = name;
 		this.port = port;
-		
-		try {
-			this.ipAddress = InetAddress.getByName(address);
-		} catch (UnknownHostException e) {
-			System.out.println(e.toString());
-        	System.exit(MAX_PRIORITY);
-		}
+		this.ipAddress = clientAddress;
 		
 		try {
 			this.clientSocket = new Socket(this.ipAddress, this.port);
@@ -43,7 +38,7 @@ public class TCPclient extends Thread {
 		this.sendToServer("CONNECT " + this.name + "\n");
 	}
 	
-	private void sendToServer(String data) {
+	public void sendToServer(String data) {
 		try {
 			this.clientOutputStream.write(data.getBytes());
 		} catch (IOException e) {
@@ -53,6 +48,7 @@ public class TCPclient extends Thread {
 	}
 	
 	//continues reading of the server's messages
+//	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {		
 		while (true) {
@@ -67,14 +63,15 @@ public class TCPclient extends Thread {
 				}
 		        catch(Exception e) {
 		        	System.out.println("error 1: " + e.toString());
-//		        	System.exit(MAX_PRIORITY);
+//		        	Thread.currentThread().stop();
+		        	System.exit(MAX_PRIORITY);
 		        }
 			}
 		}
 		
 	}
 	
-	public void processData(String data) {
+	private void processData(String data) {
 		String[] words = data.split(" ");
 		if (words[0].equals("USED")) {
 			try {
@@ -84,11 +81,11 @@ public class TCPclient extends Thread {
 			}
 		} else {
 			System.out.println(data);
+			chatMessages.add(data);			
 		}
 	}
 	
-	public static void main(String args[]) {
-		TCPclient mTCPclient = new TCPclient(args[0],args[1],Integer.parseInt(args[2]));
-		mTCPclient.start();
+	public ArrayList<String> getMessages() {
+		return chatMessages;
 	}
 }

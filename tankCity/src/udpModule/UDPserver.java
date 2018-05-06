@@ -52,8 +52,7 @@ public class UDPserver extends Thread{
         	if(gameState == 0) {
             	String[] name = data.trim().split(" ");
             	addPlayer(name[1], address, port);
-            	System.out.println(players.keySet());
-            	//establish client connection
+//            	System.out.println(players.keySet());
             }else {
             	send("Game in progress. You cannot connect at the moment.", address, port);
             }
@@ -81,7 +80,7 @@ public class UDPserver extends Thread{
 				send("ACK", address, port);
 				sendToAll(name + " is now connected.");
 				players.put(name, new PlayerInfo(name, address, port));
-				Log.info(name + " has joined the game");
+				Log.info(" " + name + " has joined the game.");
 			}else {
 				send("NAK", address, port);
 			}//checks availability of username
@@ -95,7 +94,7 @@ public class UDPserver extends Thread{
 	}//remove dead tanks
 	
 	public void run() {
-        Log.info("Game server started.");
+        Log.info(" Game server started.");
         while(true) {        	
         	if(gameState == 0) {
         		//wait for players

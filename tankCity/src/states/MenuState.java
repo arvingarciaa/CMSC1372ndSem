@@ -4,17 +4,13 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
 import tanks.Engine;
-import udpModule.UDPclient;
-
 import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,7 +19,6 @@ public class MenuState extends BasicGameState{
 	private Image img;
 	private UnicodeFont font;
 	private TextField textFieldServer, textFieldName;
-	public static UDPclient udpclient;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -31,7 +26,8 @@ public class MenuState extends BasicGameState{
 		font = getNewFont("Arial", 16);
 		img = new Image("res/logo.png");
 		
-		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);	
+		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);
+		textFieldServer.setText("localhost");
 	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
 	}
 
@@ -45,8 +41,7 @@ public class MenuState extends BasicGameState{
 		g.drawString("Exit", 295, 410);
 		img.draw(100, 20, 460, 200);
 		textFieldServer.render(gc, g);
-		textFieldName.render(gc, g);
-		
+		textFieldName.render(gc, g);		
 	}
 
 	@Override
@@ -54,22 +49,21 @@ public class MenuState extends BasicGameState{
 		int posX = Mouse.getX();
 		int posY = Mouse.getY();
 		
-		if ((posX > 260 && posX < 370) && (posY > 117 && posY < 140)) { //for Start Game
+		if ((posX > 260 && posX < 370) && (posY > 317 && posY < 340)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();
 				InetAddress clientAddress;
-				udpclient = Engine.udpclient;
 				try {
 					clientAddress = InetAddress.getByName(textFieldServer.getText());
 					int clientport = 9999;
-					Engine.createUdp(clientName, clientAddress, clientport); 
+					Engine.createConnection(clientName, clientAddress, clientport); 
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				s.enterState(States.GAME);
 			}
-		} else if ((posX > 255 && posX < 375) && (posY > 83 && posY < 107)) {
+		} else if ((posX > 255 && posX < 375) && (posY > 283 && posY < 307)) {
 			if (Mouse.isButtonDown(0)) {
 				s.enterState(States.MANUAL);
 			}

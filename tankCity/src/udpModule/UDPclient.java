@@ -45,7 +45,7 @@ public class UDPclient extends Thread{
 			String text = new String(packet.getData());
 			if(text.startsWith("ACK") ) {
 				CONNECTION=true;
-				System.out.println(CONNECTION);
+//				System.out.println(CONNECTION);
 			}else if(text.startsWith("NAK")){
 				System.out.println("Username already exists!");
 			}
@@ -84,35 +84,8 @@ public class UDPclient extends Thread{
 				receive();
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}//continuously receive from server
 	}
-	
-//	public static void main(String[] args){
-//		int port = 0;
-//		String name = "";
-//		String ipAddress = "";
-//		
-//		
-//		if(args.length < 3) {
-//			System.err.println("Error: Include a player name, ipAddress and port number.");
-//			System.exit(1);
-//		}
-//		try {
-//			name = args[0];
-//			System.out.println(args[0]);
-//			ipAddress = args[1];
-//			System.out.println(args[1]);
-//			port = Integer.parseInt(args[2]);
-//			System.out.println(args[2]);
-//		}
-//		catch(Exception e) {
-//			e.printStackTrace();
-//			System.exit(1);
-//		}
-//		UDPclient udpclient= new UDPclient(name, ipAddress, port);
-//		udpclient.start();
-//	}
 }
