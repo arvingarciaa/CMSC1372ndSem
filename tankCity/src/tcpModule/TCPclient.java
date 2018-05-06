@@ -9,8 +9,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.newdawn.slick.util.Log;
-
 public class TCPclient extends Thread {
 	private Socket clientSocket;
 	private int port;
@@ -28,7 +26,7 @@ public class TCPclient extends Thread {
 		try {
 			this.ipAddress = InetAddress.getByName(address);
 		} catch (UnknownHostException e) {
-			Log.info(e.toString());
+			System.out.println(e.toString());
         	System.exit(MAX_PRIORITY);
 		}
 		
@@ -38,7 +36,7 @@ public class TCPclient extends Thread {
 			this.clientOutputStream = this.clientSocket.getOutputStream();
 			this.clientBufferedReader = new BufferedReader(new InputStreamReader(this.clientInputStream));
 		} catch (IOException e) {
-			Log.info(e.toString());
+			System.out.println(e.toString());
 			System.exit(MAX_PRIORITY);
 		}
 		
@@ -49,7 +47,7 @@ public class TCPclient extends Thread {
 		try {
 			this.clientOutputStream.write(data.getBytes());
 		} catch (IOException e) {
-			Log.info(e.toString());
+			System.out.println(e.toString());
 			System.exit(MAX_PRIORITY);
 		}
 	}
@@ -64,20 +62,33 @@ public class TCPclient extends Thread {
 		            do {
 		            	data = this.clientBufferedReader.readLine();
 		            	if(data != null && data.length() > 0)
-		            		Log.info(data);
+		            		this.processData(data);		            		
 		            } while (data != null);
 				}
 		        catch(Exception e) {
-		        	Log.info(e.toString());
-		        	System.exit(MAX_PRIORITY);
+		        	System.out.println("error 1: " + e.toString());
+//		        	System.exit(MAX_PRIORITY);
 		        }
 			}
 		}
 		
 	}
 	
-//	public static void main(String args[]) {
-//		TCPclient mTCPclient = new TCPclient(args[0],args[1],Integer.parseInt(args[2]));
-//		mTCPclient.start();
-//	}
+	public void processData(String data) {
+		String[] words = data.split(" ");
+		if (words[0].equals("USED")) {
+			try {
+				this.clientSocket.close();
+			} catch (IOException e) {
+				System.out.println("error: " + e.toString());;
+			}
+		} else {
+			System.out.println(data);
+		}
+	}
+	
+	public static void main(String args[]) {
+		TCPclient mTCPclient = new TCPclient(args[0],args[1],Integer.parseInt(args[2]));
+		mTCPclient.start();
+	}
 }

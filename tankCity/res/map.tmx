@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" infinite="0" nextobjectid="16">
  <tileset firstgid="1" source="tileSet.tsx"/>
- <layer name="solids" width="20" height="15">
+ <layer name="background" width="20" height="15" locked="1">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACr2SwQoAIQhE1f7/nzsNyOJYQ7IP5pL1Cm2Z2RoOCON4UwPM58X5Vx97XzRRfDf86cs99GIt7z/5QOVQfCrxue/Gh9mxWga+7g9UPTj5FCZ96nxVmG8yGynn2nWwBAAA
+   H4sIAAAAAAAAC2NhYGBgGcWjeBSP4iGAAUhlSrKwBAAA
   </data>
  </layer>
- <layer name="background" width="20" height="15">
+ <layer name="solids" width="20" height="15">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACmNgoD5ggWJkNjrGJ4esBpt56OLUMA+X+8jxLzFuodR9lJrHgIOPTT0h89DlcakhZB65/kP3Bylhgi8NEQtwmUEN/1LTPHT11HAfNcKPFAAA7m9IALAEAAA=
+   H4sIAAAAAAAAC72SwQoAIQhE1f7/nzsNyOJYQ7IP5pL1Cm2Z2RoOCON4UwPM58X5Vx97XzRRfDf86cs99GIt7z/5QOVQfCrxue/Gh9mxWga+7g9UPTj5FCZ96nxVmG8yGynn2nWwBAAA
   </data>
  </layer>
 </map>

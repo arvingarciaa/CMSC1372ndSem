@@ -27,7 +27,7 @@ public class Player {
 	public static int position;
 	
 	private float speed = 0.1f;
-    private String name;
+    public static String name;
     private InetAddress address;
     private int port;
     public Bullet[] bullets;
@@ -35,6 +35,7 @@ public class Player {
     private static int FIRE_RATE = 500;
     private int bullet_interval;
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
+    public static int score;
     private Random rand = new Random();
     
     public Player(String name, InetAddress address, int port) throws SlickException {
@@ -46,6 +47,7 @@ public class Player {
 		// width height of the player
 		playerWidth = 31;
 		playerHeight = 31;
+		score = 0;
 		image = Resources.getImage("up");
 		visible = 1;
 		bullets = new Bullet[2];	//increase to add more bullets
@@ -58,8 +60,8 @@ public class Player {
     	this.x = x;
     	this.y = y;
 		// width height of the player
-		playerWidth = 31;
-		playerHeight = 31;
+		playerWidth = 29;
+		playerHeight = 29;
 		image = Resources.getImage("up");
 		visible = 1;
 		bullets = new Bullet[2];	//increase to add more bullets
@@ -106,11 +108,12 @@ public class Player {
 		
 		float clipX = x;
 		
+		//checker for wall Y collision
 		playerBox.setLocation(deltaX,y);
 	    if(!GameState.intersects(playerBox)){
 	        x = deltaX;
 	    }
-	    playerBox.setLocation(clipX,deltaY);
+	    playerBox.setLocation(clipX,deltaY);  //checker for wall X collision
 	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
 	    }
