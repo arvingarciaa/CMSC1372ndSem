@@ -1,47 +1,63 @@
 package tanks;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import entities.Player;
 import states.*;
+import tcpModule.TCPclient;
 import udpModule.UDPclient;
 
 public class Engine extends StateBasedGame{
 	public static UDPclient udpclient;
+	public static TCPclient tcpclient;
 	public static int score = 0;
+	private static int x;
+	private static int y;
+	private static Random rand = new Random();
+	private static Player player;
+	private static ArrayList<Player> players;
 	
-	public static void createUdp (String name, InetAddress clientAddress, int clientport) {
-			udpclient = new UDPclient(name, clientAddress, clientport);
-			udpclient.start();
-	}
-
 	public Engine() {
 		super("Tank City");
-		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
 			AppGameContainer game = new AppGameContainer(new Engine());
-			game.setDisplayMode(Constants.WIDTH, Constants.HEIGHT, false);
+			game.setDisplayMode(Constants.WIDTH, Constants.HEIGHT+Constants.CHAT_HEIGHT, false);
 			game.start();
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void createConnection (String name, InetAddress clientAddress, int clientport) {
+		udpclient = new UDPclient(name, clientAddress, clientport);
+		udpclient.start();
+		tcpclient = new TCPclient(name, clientAddress, clientport);
+		tcpclient.start();
+	}
+	
+	public static Player createPlayer(String name) {
+		do {
+			x = rand.nextInt(20)*32;
+			y = rand.nextInt(15)*32;
+		}while(GameState.blocked[x/32][y/32]==true);
+		player = new Player(x,y);
+		//players.add(player);
+		return player;
 	}
 	
 
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
-		// TODO Auto-generated method stub
 		gc.setAlwaysRender(true);
 		gc.setShowFPS(true);
 		gc.setVSync(true);
@@ -53,5 +69,4 @@ public class Engine extends StateBasedGame{
 		this.addState(new EndState());
 		this.addState(new WaitState());
 	}
-
 }
