@@ -2,10 +2,16 @@ package entities;
 
 import java.net.InetAddress;
 
+import tanks.Resources;
+
 public class PlayerInfo {
 	private String name;
 	private InetAddress address;
 	private int port;
+	private float xpos;
+	private float ypos;
+	private String tankColor;
+	public org.newdawn.slick.Image image;
 	
 	public PlayerInfo(String name, InetAddress address, int port) {
 		this.name = name;
@@ -47,5 +53,26 @@ public class PlayerInfo {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public float getXpos() {
+		return this.xpos;
+	}
+	
+	public float getYpos() {
+		return this.ypos;
+	}
+	
+	public void setXpos(float xpos) {
+		this.xpos = xpos;
+	}
+	
+	public void setYpos(float ypos) {
+		this.ypos = ypos;
+	}
+	
+	public void setImage(String tankColor) {
+		image = Resources.getImage(tankColor,"up");
+		this.tankColor = tankColor;
 	}
 }

@@ -1,11 +1,14 @@
 package udpModule;
 
+import java.util.List;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.newdawn.slick.util.Log;
 
@@ -15,6 +18,7 @@ public class UDPserver extends Thread{
 	private int PORT = 9999; 
 	private DatagramSocket serverSocket = null;
 	private HashMap<String, PlayerInfo> players = null;
+	private List<String> tankColors = new ArrayList<String>();
 	private int gameState = 0;
 	 
 	public UDPserver(int port) {
@@ -58,15 +62,19 @@ public class UDPserver extends Thread{
 	        InetAddress address = receivePacket.getAddress();
 	        int port = receivePacket.getPort();
 	        String[] text = data.trim().split(" ");
-			if(text[0]=="CONNECT") {
-	        	if(gameState == 0) {	            	
+//	        Log.info(" UDPserver: " + text[0] + " " + text[1]);
+        	
+			if(text[0].equals("CONNECT")) {
+//				Log.info(" UDPserver: " + gameState);
+	        	if(gameState == 0) {
+//	        		Log.info( text[1] );
 	            	addPlayer(text[1], address, port);
-	            	System.out.println(players.keySet());
+//	            	System.out.println(players.keySet());
 	            	//establish client connection
 	            }else {
 	            	send("NAK GIP", address, port);
 	            }
-			}else if(text[0]=="HIT") {
+			}else if(text[0].equals("HIT")) {
 				//tank hit by another tank
 				//remove destroyed tank from game
 				//update score
@@ -90,11 +98,22 @@ public class UDPserver extends Thread{
 	}//broadcast to all clients
 	
 	public void addPlayer(String name, InetAddress address, int port) {
+		tankColors.add("GREEN");
+		tankColors.add("BLUE");
+		tankColors.add("PINK");
+		tankColors.add("RED");
+		tankColors.add("GRAY");
 		try {
 			if(players.get(name)==null) {
 				send("ACK", address, port);
-				sendToAll(name + " is now connected.");
+				
+				sendToAll("PLYR " + name);
+				String tankColor = tankColors.get(new Random().nextInt(tankColors.size()));				
+				send("IMG " + name + " " +  tankColor,address, port);
+				Log.info(tankColor);
 				players.put(name, new PlayerInfo(name, address, port));
+				tankColors.remove(tankColor);				
+				
 				Log.info(" " + name + " has joined the game.");
 			}else {
 				send("NAK NNA", address, port);
@@ -127,11 +146,13 @@ public class UDPserver extends Thread{
         		if(players.size()<3) {
         			//wait
         			receive();
-        		}else
+        		}else {
         			gameState = 1;
+        			receive();
+        		}
         	}else if(gameState == 1) {
         		//start game ; initialize board for all clients
-        		sendToAll("Game Start");
+        		sendToAll("MSG START");
         		receive();
         	}else if(gameState == 2) {
         		//game in progress

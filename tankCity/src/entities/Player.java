@@ -27,7 +27,7 @@ public class Player {
 	public static int position;
 	
 	private float speed = 0.1f;
-    public static String name;
+    public String name;
     private InetAddress address;
     private int port;
     public Bullet[] bullets;
@@ -37,6 +37,7 @@ public class Player {
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
     public static int score;
     private Random rand = new Random();
+    private String tankColor;
     
     public Player(String name, InetAddress address, int port) throws SlickException {
 		this.name = name;
@@ -48,7 +49,7 @@ public class Player {
 		playerWidth = 29;
 		playerHeight = 29;
 		score = 0;
-		image = Resources.getImage("up");
+		//image = Resources.getImage("up");
 		visible = 1;
 		bullets = new Bullet[2];	//increase to add more bullets
 		for(int i = 0; i < bullets.length; i++) {
@@ -56,13 +57,12 @@ public class Player {
 		}
 	}
     
-    public Player(int x, int y) {
+    public Player(float x, float y) {
     	this.x = x;
     	this.y = y;
 		// width height of the player
 		playerWidth = 29;
 		playerHeight = 29;
-		image = Resources.getImage("up");
 		visible = 1;
 		score = 0;
 		bullets = new Bullet[2];	//increase to add more bullets
@@ -72,8 +72,8 @@ public class Player {
     }
     
     public void render(GameContainer gc, Graphics g) {
-		if (image != null) {
-			image.draw(x,y,playerWidth,playerHeight,color);
+    	if (image != null) {
+    		image.draw(x,y,playerWidth,playerHeight,color);
 		}
 	};
 	
@@ -87,23 +87,24 @@ public class Player {
 		float deltaY = y;
 		
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
-			image = Resources.getImage("up");
+			image = Resources.getImage(tankColor, "up");
 			tank_face = 0;
 	        deltaY -= delta * speed;
+	        
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
 			deltaY += delta * speed;
-			image = Resources.getImage("down");
+			image = Resources.getImage(tankColor, "down");
 			tank_face = 2;
 		}
 		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
 			deltaX += speed*delta;
-			image = Resources.getImage("right");
+			image = Resources.getImage(tankColor, "right");
 			tank_face = 3;
 		}
 		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
 			deltaX -= speed*delta;
-			image = Resources.getImage("left");
+			image = Resources.getImage(tankColor, "left");
 			tank_face = 1;
 		}
 		
@@ -158,6 +159,11 @@ public class Player {
 		return port;
 	}
 	
+	public void setImage(String tankColor) {
+		image = Resources.getImage(tankColor,"up");
+		this.tankColor = tankColor;
+	}
+	
 	public void setPort(int port) {
 		this.port = port;
 	}
@@ -172,6 +178,22 @@ public class Player {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public float getXpos() {
+		return this.x;
+	}
+	
+	public float getYpos() {
+		return this.y;
+	}
+	
+	public void setXpos(float xpos) {
+		this.x = xpos;
+	}
+	
+	public void setYpos(float ypos) {
+		this.y = ypos;
 	}
 
     public String toString(){

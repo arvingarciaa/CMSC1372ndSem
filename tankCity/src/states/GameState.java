@@ -1,6 +1,7 @@
 package states;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.awt.Font;
 
@@ -19,6 +20,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
 import entities.Player;
+import entities.PlayerInfo;
 import tanks.Constants;
 import tanks.Engine;
 import tanks.Resources;
@@ -29,8 +31,7 @@ public class GameState extends BasicGameState{
 	public static TiledMap map;
 	public static int solidsLayer;
 	public static int objectLayer;
-	private static Player tank;
-	public boolean blocked[][];
+	public static boolean blocked[][];
 	public static boolean dest[][];
 	private static ArrayList<Rectangle> blocks;
 	public static int tileSize = 32;
@@ -48,6 +49,9 @@ public class GameState extends BasicGameState{
 	private TextField textFieldChatInput;
 	private String playerName;
 	ArrayList<String> chatMessages;
+	private HashMap<String, Player> players = new HashMap<>();
+	private static Player player;
+	boolean boardAtStart = false;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -78,13 +82,15 @@ public class GameState extends BasicGameState{
 
 		font = getNewFont("Arial", 48);
 		textFieldChatInput = new TextField(gc, gc.getDefaultFont(), 0, Constants.TOTAL_HEIGHT-25, 640, 25);
-						
+		
+		boardAtStart = true;
+		
 		//randomize x and y position of tank then check if blocked
-		do {
-			x = rand.nextInt(20)*32;
-			y = rand.nextInt(15)*32;
-		}while(blocked[x/32][y/32]==true);
-		tank = new Player(x,y);
+//		do {
+//			x = rand.nextInt(20)*32;
+//			y = rand.nextInt(15)*32;
+//		}while(blocked[x/32][y/32]==true);
+//		player = new Player(x,y);
 	}
 
 	@Override
@@ -93,13 +99,21 @@ public class GameState extends BasicGameState{
 		for(int x=0; x < map.getWidth(); x++) {
 				for(int y=0; y < map.getHeight(); y++) {
 					if(destroyed[x][y] == true) {
-						Image texture = Resources.getImage("grass");
+						Image texture = Resources.getImage("GREEN_grass");
 			            g.drawImage(texture, x*32, y*32, null);
 			       }
 				}
 			}
-		tank.render(gc,g);	//renders the tank
-		for(Bullet b: tank.bullets) {	//pre-renders the bullets
+//		players = udpclient.players;
+//		Object[] currPlayers = players.keySet().toArray();
+//		for(int i=0; i<players.size(); i++) {
+//			players.get(currPlayers[i]).render(gc,g);
+//			for(Bullet b: players.get(currPlayers[i]).bullets) {	//pre-renders the bullets
+//				b.render(gc,g);
+//			}
+//		}
+		player.render(gc,g);	//renders the tank
+		for(Bullet b: player.bullets) {	//pre-renders the bullets
 			b.render(gc,g);
 		}
 		if (pause%2==1)		// to see scores
@@ -153,8 +167,16 @@ public class GameState extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		tcpclient = Engine.tcpclient;
 		udpclient = Engine.udpclient;
-		//		get the chat messages
+		players = udpclient.players;
+		//get the chat messages
 		chatMessages = tcpclient.getMessages();
+		if(boardAtStart && players.size() != 3) {
+			player = Engine.createPlayer(udpclient.getPlayerName());
+			udpclient.send("POS "+ udpclient.getPlayerName() + " " + String.valueOf(player.x) + " " + String.valueOf(player.y));
+			player.setImage(udpclient.getTankColor());
+//			System.out.print(udpclient.getTankColor());
+			boardAtStart = false;
+		}		
 				
 		if (gc.getInput().isKeyPressed(Input.KEY_TAB))	//to see score
 			pause++;
@@ -163,9 +185,10 @@ public class GameState extends BasicGameState{
 		int mouseY = gc.getInput().getMouseY();
 		
 		if (!(mouseX>=0 && mouseX<=Constants.WIDTH && mouseY>=Constants.HEIGHT)) {
-			tank.update(gc, delta);
+			player.update(gc, delta);
 		}
 		
+		//getting chat input
 		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
 			String data = textFieldChatInput.getText();
 			if (data.length()>0) {

@@ -5,23 +5,25 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.newdawn.slick.util.Log;
 
+import entities.Player;
 import entities.PlayerInfo;
-
 
 public class UDPclient extends Thread{
 	DatagramSocket socket = null;
 
 	public String name;
-	private static boolean CONNECTION = false;
-	
+	public boolean CONNECTION = false;
+	public boolean START = false;
 	InetAddress address = null;
 	int PORT;
+	private String tankColor;
 	
-	private HashMap<String, PlayerInfo> players = null;
+	public HashMap<String, Player> players = new HashMap<>();
 
 	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
@@ -33,7 +35,6 @@ public class UDPclient extends Thread{
 		} catch(Exception e) {
 			e.printStackTrace();;
 		}
-		players = new HashMap<String, PlayerInfo>();
 	}
 	
 	public String getPlayerName() {
@@ -52,7 +53,6 @@ public class UDPclient extends Thread{
 			String text = new String(packet.getData());
 			dataParser(text);
 	    } catch(SocketTimeoutException e) {
-	    	e.printStackTrace();
 	    } catch(Exception e) {
 	    	e.printStackTrace();
 	    }
@@ -73,39 +73,52 @@ public class UDPclient extends Thread{
 	//process all the data received from server
 	public void dataParser(String text) throws UnknownHostException {
 		String[] data = text.trim().split(" ");
-		if(data[0] == "ACK" ) {
+		if(data[0].equals("ACK" )) {
 			CONNECTION=true;
 			System.out.println("Welcome " + name +"!");
-		}else if(data[0] == "NAK"){
-			if(data[1] == "NNA") {
+			//players.put(name, new Player(0, 0));
+			
+			//request list of player names
+		}else if(data[0].equals("NAK")){
+			if(data[1].equals("NNA")) {
 				System.out.println("Username already exists!");
 			}else {
 				System.out.println("Connection not allowed! Game in progress");
 			}
 		}else if(text.startsWith("MOV")) {
 			//new tank position
-		}else if(data[0]=="PLYR") {			
-			try {
-				PlayerInfo newPlayer = new PlayerInfo(data[1],InetAddress.getByName(data[2]),Integer.parseInt(data[3]));
-				players.put(data[1], newPlayer);
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else if(data[0] == "HIT") {
+		}else if(data[0].equals("PLYR")) {
+			players.put(data[1], new Player(0, 0));
+			//players.get(data[1]).visible = 0;
+		}else if(data[0].equals("HIT")) {
 			//tank hit
 			//update score
-		}else if(data[0] == "WALL") {
+		}else if(data[0].equals("WALL")) {
 			//update map
-		}else if(data[0] == "PUA") {
+		}else if(data[0].equals("PUA")) {
 			//update map and player attributes
-		}else if(data[0] == "NPUS") {
+		}else if(data[0].equals("NPUS")) {
 			//update map
-		}else if(data[0] == "POS") {
+		}else if(data[0].equals("POS")) {
 			//init tank positions
-		}else if(data[0] == "MSG") {
+			players.get(data[1]).setXpos(Float.parseFloat(data[2]));
+			players.get(data[1]).setYpos(Float.parseFloat(data[3]));
+		}else if(data[0].equals("MSG")) {
 			//chat
+			String msg = ""; 
+			for (String x: data)
+				msg = msg + " " + x;
+			Log.info(msg);
+		}else if(data[0].equals("IMG")) {
+			tankColor = data[2];
+			//players.get(data[1]).setImage(tankColor);
+		}else if(data[0].equals("START")) {
+			START = true;
 		}
+	}
+	
+	public String getTankColor() {
+		return tankColor;
 	}
 	
 	@Override

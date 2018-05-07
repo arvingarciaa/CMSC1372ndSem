@@ -29,6 +29,7 @@ public class MenuState extends BasicGameState{
 		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);
 		textFieldServer.setText("localhost");
 	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
+	    textFieldName.setText("Carl");
 	}
 
 	@Override
