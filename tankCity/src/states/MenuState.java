@@ -1,6 +1,7 @@
 package states;
 
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -31,8 +32,7 @@ public class MenuState extends BasicGameState{
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
 		font = getNewFont("Arial", 16);
-		img = new Image("res/logo.png");
-		
+		img = Resources.getImage("menustate");
 		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);
 		textFieldServer.setText("localhost");
 	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
@@ -44,23 +44,12 @@ public class MenuState extends BasicGameState{
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
+		img.draw(0,0);
+		g.setColor(Color.black);
 		g.drawString("Server:", 180, 230);
 		g.drawString("Name: ", 200, 280);
-		g.drawString("Port: ", 200, 330);
+		g.drawString("Port: ", 200, 330);		
 		
-		g.drawImage(Resources.getImage("start"), 260, 390);
-		g.drawImage(Resources.getImage("instructions"), 257, 440);
-		g.drawImage(Resources.getImage("exit"), 297, 490);
-		
-		text = "Garcia, A., Bon, P., Janoras C.";
-		textWidth = font.getWidth(text);
-		g.drawString(text, Constants.WIDTH/2f - textWidth/2f -20, 590);
-		
-		text = "\u00a9 All Rights Reserved.";
-		textWidth = font.getWidth(text);
-		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 615);
-		
-		img.draw(100, 20, 460, 200);
 		textFieldServer.render(gc, g);
 		textFieldName.render(gc, g);	
 		textFieldPort.render(gc, g);
@@ -82,7 +71,7 @@ public class MenuState extends BasicGameState{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s.enterState(States.GAME);
+				s.enterState(States.WAIT);
 			}
 		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
 			if (Mouse.isButtonDown(0)) {

@@ -1,60 +1,46 @@
 package states;
 
-
 import java.awt.Font;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import tanks.Constants;
-import tanks.Engine;
-import udpModule.UDPclient;
+import tanks.Resources;
 
 public class EndState extends BasicGameState{
-	 private UnicodeFont font;
-	 private float textWidth;
-	 private String text,scores;
-	 private UDPclient udpclient;
-
+	private Image img;
+		
 	@Override
-	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
-		font = getNewFont("Arial", 48);
-        udpclient = Engine.udpclient;
+		img = Resources.getImage("endstate");
+		
 	}
 
 	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
-		font.loadGlyphs();
-		text = "GAME OVER";
-		scores = "";
-        textWidth = font.getWidth(text);
-		font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
-
+		img.draw(0,0);
 	}
-	
+
+	@Override
+	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
+		// TODO Auto-generated method stub
+		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)){
+            s.enterState(States.MENU);
+        }
+	}
+
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
 		return States.END;
 	}
-	public UnicodeFont getNewFont(String fontName, int fontSize) {
-		font = new UnicodeFont(new Font(fontName, Font.BOLD, fontSize));
-		font.addGlyphs("@");
-		font.getEffects().add(new ColorEffect(java.awt.Color.white));
-		return (font);
-	}
-
-	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
