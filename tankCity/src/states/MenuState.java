@@ -14,6 +14,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import entities.Player;
 import tanks.Constants;
 import tanks.Engine;
+import tanks.Resources;
+
 import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -46,18 +48,10 @@ public class MenuState extends BasicGameState{
 		g.drawString("Name: ", 200, 280);
 		g.drawString("Port: ", 200, 330);
 		
-		text = "Start Game";
-		textWidth = font.getWidth(text);
-		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 390);
+		g.drawImage(Resources.getImage("start"), 260, 390);
+		g.drawImage(Resources.getImage("instructions"), 257, 440);
+		g.drawImage(Resources.getImage("exit"), 297, 490);
 		
-		text = "Instructions";
-		textWidth = font.getWidth(text);
-		g.drawString(text, Constants.WIDTH/2f - textWidth/2f-10, 425);
-		
-		text = "Exit";
-		textWidth = font.getWidth(text);
-		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 460);
-
 		text = "Garcia, A., Bon, P., Janoras C.";
 		textWidth = font.getWidth(text);
 		g.drawString(text, Constants.WIDTH/2f - textWidth/2f -20, 590);
@@ -78,7 +72,7 @@ public class MenuState extends BasicGameState{
 		int posY = Mouse.getY();
 		System.out.println("posX: " + posX + " posY: " + posY);
 		
-		if ((posX > 270 && posX < 370) && (posY > 270 && posY < 290)) { //for Start Game
+		if ((posX > 260 && posX < 412) && (posY > 209 && posY < 249)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();
 				InetAddress clientAddress;
@@ -92,11 +86,11 @@ public class MenuState extends BasicGameState{
 				}
 				s.enterState(States.GAME);
 			}
-		} else if ((posX > 260 && posX < 385) && (posY > 235 && posY < 255)) {
+		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
 			if (Mouse.isButtonDown(0)) {
 				s.enterState(States.MANUAL);
 			}
-		} else if((posX > 300 && posX < 350) && (posY > 201 && posY < 211)) {
+		} else if((posX > 296 && posX < 373) && (posY > 109 && posY < 149)) {
 			if (Mouse.isButtonDown(0)) {
 				System.exit(0);
 			}
