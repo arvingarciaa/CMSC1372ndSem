@@ -20,6 +20,7 @@ public class UDPclient extends Thread{
 	public boolean CONNECTION = false;
 	public boolean START = false;
 	InetAddress address = null;
+	private static int connectedCount;
 	int PORT;
 	private String tankColor;
 	
@@ -27,7 +28,8 @@ public class UDPclient extends Thread{
 
 	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
-		this.setPlayerName(name);;
+		this.setPlayerName(name);
+		connectedCount = 0;
 		try {
 			address = ipAddress;
 			socket = new DatagramSocket();
@@ -35,6 +37,10 @@ public class UDPclient extends Thread{
 		} catch(Exception e) {
 			e.printStackTrace();;
 		}
+	}
+	
+	public static int getConnectedCount() {
+		return connectedCount;
 	}
 	
 	public String getPlayerName() {
@@ -76,6 +82,7 @@ public class UDPclient extends Thread{
 		if(data[0].equals("ACK" )) {
 			CONNECTION=true;
 			System.out.println("Welcome " + name +"!");
+			connectedCount++;
 			//players.put(name, new Player(0, 0));
 			
 			//request list of player names

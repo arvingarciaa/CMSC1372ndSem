@@ -10,6 +10,9 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import entities.Player;
+import tanks.Constants;
 import tanks.Engine;
 import java.awt.Font;
 import java.net.InetAddress;
@@ -18,7 +21,9 @@ import java.net.UnknownHostException;
 public class MenuState extends BasicGameState{
 	private Image img;
 	private UnicodeFont font;
-	private TextField textFieldServer, textFieldName;
+	private TextField textFieldServer, textFieldName, textFieldPort;
+	private float textWidth;
+	private String text;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
@@ -30,6 +35,8 @@ public class MenuState extends BasicGameState{
 		textFieldServer.setText("localhost");
 	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
 	    textFieldName.setText("Carl");
+	    textFieldPort = new TextField(gc, gc.getDefaultFont(), 250, 330, 200, 25);
+	    textFieldPort.setText("9999");
 	}
 
 	@Override
@@ -37,20 +44,41 @@ public class MenuState extends BasicGameState{
 		// TODO Auto-generated method stub
 		g.drawString("Server:", 180, 230);
 		g.drawString("Name: ", 200, 280);
-		g.drawString("Start Game", 270, 340);
-		g.drawString("Instructions", 260, 375);
-		g.drawString("Exit", 295, 410);
+		g.drawString("Port: ", 200, 330);
+		
+		text = "Start Game";
+		textWidth = font.getWidth(text);
+		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 390);
+		
+		text = "Instructions";
+		textWidth = font.getWidth(text);
+		g.drawString(text, Constants.WIDTH/2f - textWidth/2f-10, 425);
+		
+		text = "Exit";
+		textWidth = font.getWidth(text);
+		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 460);
+
+		text = "Garcia, A., Bon, P., Janoras C.";
+		textWidth = font.getWidth(text);
+		g.drawString(text, Constants.WIDTH/2f - textWidth/2f -20, 590);
+		
+		text = "\u00a9 All Rights Reserved.";
+		textWidth = font.getWidth(text);
+		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, 615);
+		
 		img.draw(100, 20, 460, 200);
 		textFieldServer.render(gc, g);
-		textFieldName.render(gc, g);		
+		textFieldName.render(gc, g);	
+		textFieldPort.render(gc, g);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		int posX = Mouse.getX();
 		int posY = Mouse.getY();
+		System.out.println("posX: " + posX + " posY: " + posY);
 		
-		if ((posX > 260 && posX < 370) && (posY > 317 && posY < 340)) { //for Start Game
+		if ((posX > 270 && posX < 370) && (posY > 270 && posY < 290)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();
 				InetAddress clientAddress;
@@ -64,9 +92,13 @@ public class MenuState extends BasicGameState{
 				}
 				s.enterState(States.GAME);
 			}
-		} else if ((posX > 255 && posX < 375) && (posY > 283 && posY < 307)) {
+		} else if ((posX > 260 && posX < 385) && (posY > 235 && posY < 255)) {
 			if (Mouse.isButtonDown(0)) {
 				s.enterState(States.MANUAL);
+			}
+		} else if((posX > 300 && posX < 350) && (posY > 201 && posY < 211)) {
+			if (Mouse.isButtonDown(0)) {
+				System.exit(0);
 			}
 		}
 		
