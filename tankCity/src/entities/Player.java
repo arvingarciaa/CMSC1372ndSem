@@ -82,7 +82,7 @@ public class Player {
 		speed = (float) 0.08;
 		bullet_interval += delta;
 		Rectangle playerBox = new Rectangle(x,y,playerWidth,playerHeight);
-
+		
 		float deltaX = x;
 		float deltaY = y;
 		
@@ -118,6 +118,10 @@ public class Player {
 	    playerBox.setLocation(clipX,deltaY);  //checker for wall X collision
 	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
+	    }
+	    
+	    if(GameState.collidesWith(playerBox, Token.tokenRectangle)) {
+	    	Token.setActiveToFalse();
 	    }
 
 		

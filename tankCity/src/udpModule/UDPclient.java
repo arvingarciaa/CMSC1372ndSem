@@ -27,7 +27,7 @@ public class UDPclient extends Thread{
 
 	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
-		this.setPlayerName(name);;
+		this.setPlayerName(name);
 		try {
 			address = ipAddress;
 			socket = new DatagramSocket();
