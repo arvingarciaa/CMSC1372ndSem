@@ -9,18 +9,18 @@ import org.newdawn.slick.geom.Rectangle;
 import states.GameState;
 import tanks.Resources;
 
-public class Token {
+public class Powerup {
 
 	private static boolean active = true;
 	private int posX, posY;
-	public static Rectangle tokenRectangle;
+	public static Rectangle powerupRectangle;
 	private Image texture = Resources.getImage("star1");
 	private int selfDelta = 0;
 	
-	public Token() {
+	public Powerup() {
 		this.posX = 10*32;
 		this.posY = 8*32;
-		tokenRectangle = new Rectangle(posX, posY, 32, 32);
+		powerupRectangle = new Rectangle(posX, posY, 32, 32);
 	}
 
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -41,7 +41,7 @@ public class Token {
 				selfDelta = 0;
 			}
 		} else {
-			tokenRectangle = new Rectangle(0,0,0,0);
+			powerupRectangle = new Rectangle(0,0,0,0);
 		}
 	}
 	

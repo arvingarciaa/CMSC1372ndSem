@@ -129,9 +129,9 @@ public class Player {
 	        y = deltaY;
 	    }
 	    
-	    if(GameState.collidesWith(playerBox, Token.tokenRectangle)) {
+	    if(GameState.collidesWith(playerBox, Powerup.powerupRectangle)) {
 	    	Player.addHealth();
-	    	Token.setActiveToFalse();
+	    	Powerup.setActiveToFalse();
 	    }
 
 		

@@ -28,7 +28,6 @@ public class WaitState extends BasicGameState{
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
 		font = getNewFont("Arial", 35);
 		img = Resources.getImage("waitstate");
         udpclient = Engine.udpclient;
@@ -36,7 +35,6 @@ public class WaitState extends BasicGameState{
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
-		// TODO Auto-generated method stub
 		img.draw(0,0);
 		g.setColor(Color.black);
 		font.loadGlyphs();
@@ -55,14 +53,14 @@ public class WaitState extends BasicGameState{
         textHeight = font.getHeight(text);
         g.setFont(font);
 		g.drawString(text, Constants.WIDTH/2f - textWidth/2f, Constants.TOTAL_HEIGHT/2f - textHeight/2f);
-
 	}
 	
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return States.WAIT;
 	}
+	
+	@SuppressWarnings("unchecked")
 	public UnicodeFont getNewFont(String fontName, int fontSize) {
 		font = new UnicodeFont(new Font(fontName, Font.BOLD, fontSize));
 		font.addGlyphs("@");
@@ -72,8 +70,8 @@ public class WaitState extends BasicGameState{
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int delta) throws SlickException {
-		// TODO Auto-generated method stub
 		timer+=delta;
+//		
 	}
 
 }

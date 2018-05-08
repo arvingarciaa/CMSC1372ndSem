@@ -19,7 +19,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
-import entities.Token;
+import entities.Powerup;
 import entities.Player;
 import entities.PlayerInfo;
 import tanks.Constants;
@@ -53,12 +53,12 @@ public class GameState extends BasicGameState{
 	private HashMap<String, Player> players = new HashMap<>();
 	private static Player player;
 	boolean boardAtStart = false;
-	private static Token token;
+	private static Powerup powerup;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		map = new TiledMap("res/map.tmx","res");
-		token = new Token();
+		powerup = new Powerup();
 		solidsLayer = map.getLayerIndex("solids");
 		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
 		dest = new boolean[Constants.WIDTH][Constants.HEIGHT];
@@ -153,7 +153,7 @@ public class GameState extends BasicGameState{
 		}
 		
 		textFieldChatInput.render(gc, g);
-		token.render(gc, g);
+		powerup.render(gc, g);
 		
 //		render chat messages
 		int x_position = 15;
@@ -185,7 +185,7 @@ public class GameState extends BasicGameState{
 		if (!(mouseX>=0 && mouseX<=Constants.WIDTH && mouseY>=Constants.HEIGHT)) {
 			player.update(gc, delta);
 		}
-		token.update(delta);
+		powerup.update(delta);
 		
 		//getting chat input
 		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
