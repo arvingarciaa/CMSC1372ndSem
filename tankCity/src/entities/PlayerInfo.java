@@ -73,6 +73,6 @@ public class PlayerInfo {
 	
 	public void setImage(String tankColor) {
 		image = Resources.getImage(tankColor,"up");
-		this.tankColor = tankColor;
+		//this.tankColor = tankColor;
 	}
 }
