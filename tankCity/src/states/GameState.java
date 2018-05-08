@@ -234,6 +234,7 @@ public class GameState extends BasicGameState{
 		        		if(dest[collX][collY] == true)	{
 		        			blocks.remove(i);
 		        			Player.score++;
+		        			Player.subtractHealth();
 		        			destroyed[collX][collY] = true;
 		        		}
 		            return true;

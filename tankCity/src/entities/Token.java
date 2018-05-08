@@ -40,6 +40,8 @@ public class Token {
 			} else if(selfDelta >= 1000) {
 				selfDelta = 0;
 			}
+		} else {
+			tokenRectangle = new Rectangle(0,0,0,0);
 		}
 	}
 	

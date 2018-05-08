@@ -70,8 +70,6 @@ public class MenuState extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		int posX = Mouse.getX();
 		int posY = Mouse.getY();
-		System.out.println("posX: " + posX + " posY: " + posY);
-		
 		if ((posX > 260 && posX < 412) && (posY > 209 && posY < 249)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();

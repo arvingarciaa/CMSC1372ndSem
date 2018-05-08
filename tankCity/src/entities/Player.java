@@ -1,5 +1,6 @@
 package entities;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -38,6 +39,7 @@ public class Player {
     public static int score;
     private Random rand = new Random();
     private String tankColor;
+    private static float playerHealth;
     
     public Player(String name, InetAddress address, int port) throws SlickException {
 		this.name = name;
@@ -55,6 +57,7 @@ public class Player {
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i] =  new Bullet();
 		}
+		playerHealth = 4;
 	}
     
     public Player(float x, float y) {
@@ -69,12 +72,18 @@ public class Player {
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i] =  new Bullet();
 		}
+		playerHealth = 4;
     }
     
     public void render(GameContainer gc, Graphics g) {
     	if (image != null) {
     		image.draw(x,y,playerWidth,playerHeight,color);
-		}
+    	}
+//    	System.out.println("playerHealth: " + playerHealth + "\n playerWidth: " + (int) (playerWidth * (3/4)));
+    	g.setColor(Color.black);
+    	g.drawRect(x, y-7, playerWidth, 5);
+    	g.setColor(Color.green);
+    	g.fillRect(x, y-7,Math.round(playerWidth * (playerHealth/4)), 5);
 	};
 	
 	public void update(GameContainer gc, int delta) throws SlickException {
@@ -86,11 +95,11 @@ public class Player {
 		float deltaX = x;
 		float deltaY = y;
 		
+		
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
+	        deltaY -= delta * speed;
 			image = Resources.getImage(tankColor, "up");
 			tank_face = 0;
-	        deltaY -= delta * speed;
-	        
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
 			deltaY += delta * speed;
@@ -121,6 +130,7 @@ public class Player {
 	    }
 	    
 	    if(GameState.collidesWith(playerBox, Token.tokenRectangle)) {
+	    	Player.addHealth();
 	    	Token.setActiveToFalse();
 	    }
 
@@ -135,7 +145,7 @@ public class Player {
 			if(current >= bullets.length) {
 				current = 0;
 			}
-			bullet_interval = 0;
+		  	bullet_interval = 0;
 		}
 		for(Bullet b : bullets) {
 			b.update(delta);
@@ -151,8 +161,27 @@ public class Player {
 		return address;
 	}
 	
+	public static int getCurrHealth() {
+		return (int)playerHealth;
+	}
+	
+	public static void subtractHealth() {
+		if(playerHealth > 0) playerHealth--;
+	}
+	
+	public static void addHealth() {
+		playerHealth++;
+	}
+	
 	public void setAddress(InetAddress address) {
 		this.address = address;
+	}
+	
+	public boolean areKeysPressed(Input input) {
+		if(input.isKeyDown(Input.KEY_W) || input.isKeyDown(Input.KEY_S) || input.isKeyDown(Input.KEY_A ) || input.isKeyDown(Input.KEY_D) || input.isKeyDown(Input.KEY_UP) || input.isKeyDown(Input.KEY_LEFT) || input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_DOWN)) {
+			return true;
+		} 
+		return false;
 	}
 
 	/**
