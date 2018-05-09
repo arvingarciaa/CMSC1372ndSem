@@ -6,6 +6,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.gui.TextField;
@@ -31,24 +32,28 @@ public class MenuState extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		// TODO Auto-generated method stub
-		font = getNewFont("Arial", 16);
 		img = Resources.getImage("menustate");
-		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);
+		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 240, 200, 32);
 		textFieldServer.setText("localhost");
-	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 280, 200, 25);
+	    textFieldName = new TextField(gc, gc.getDefaultFont(), 250, 290, 200, 32);
 	    textFieldName.setText("Carl");
-	    textFieldPort = new TextField(gc, gc.getDefaultFont(), 250, 330, 200, 25);
+	    textFieldPort = new TextField(gc, gc.getDefaultFont(), 250, 340, 200, 32);
 	    textFieldPort.setText("9999");
+	   
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
 		img.draw(0,0);
-		g.setColor(Color.black);
-		g.drawString("Server:", 180, 230);
-		g.drawString("Name: ", 200, 280);
-		g.drawString("Port: ", 200, 330);		
+		
+		Font font = new Font("Arial", Font.PLAIN, 18);
+		TrueTypeFont ttf = new TrueTypeFont(font, true);	
+
+		ttf.drawString(190, 245, "Server:", Color.black);
+		ttf.drawString(195, 295, "Name:", Color.black);
+		ttf.drawString(210, 343, "Port:", Color.black);		
+		
 		
 		textFieldServer.render(gc, g);
 		textFieldName.render(gc, g);	
