@@ -245,10 +245,6 @@ public class Board{
 		}		
 	}
 
-	public int getID() {
-		return States.GAME;
-	}
-
 	public static boolean intersects(Rectangle rec1) { //for tank to wall
 	    for(int i=0; i<blocks.size(); i++){
 	        if(rec1.intersects(blocks.get(i))){
