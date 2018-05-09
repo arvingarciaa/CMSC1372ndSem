@@ -50,6 +50,7 @@ public class MenuState extends BasicGameState{
 		g.drawString("Name: ", 200, 280);
 		g.drawString("Port: ", 200, 330);		
 		
+		g.setColor(Color.white);
 		textFieldServer.render(gc, g);
 		textFieldName.render(gc, g);	
 		textFieldPort.render(gc, g);
@@ -71,7 +72,7 @@ public class MenuState extends BasicGameState{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s.enterState(States.WAIT);
+				s.enterState(States.GAME);
 			}
 		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
 			if (Mouse.isButtonDown(0)) {
@@ -82,7 +83,6 @@ public class MenuState extends BasicGameState{
 				System.exit(0);
 			}
 		}
-		
 		
 	}
 

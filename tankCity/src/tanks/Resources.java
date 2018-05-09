@@ -41,9 +41,13 @@ public class Resources {
 			images.put("instructions", loadImage("res/instructions.jpg"));
 			images.put("waitstate", loadImage("res/waitstate.png"));
 			images.put("endstate", loadImage("res/endstate.jpg"));
+			images.put("chatbg", loadImage("res/chatbg.jpg"));
+			images.put("asphalt", loadImage("res/asphalt.jpg"));
+			images.put("metal", loadImage("res/metal.jpg"));
+			images.put("brick", loadImage("res/brick.png"));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 	}
 

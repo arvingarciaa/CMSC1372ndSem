@@ -18,12 +18,11 @@ public class UDPclient extends Thread{
 
 	public String name;
 	public boolean CONNECTION = false;
-	public boolean START = false;
-	InetAddress address = null;
-	int PORT;
+	public InetAddress address;
+	public int PORT;
+	private HashMap<String, Player> players;
+	private static Player player;
 	private String tankColor;
-	
-	public HashMap<String, Player> players = new HashMap<>();
 
 	public UDPclient(String name, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
@@ -63,7 +62,7 @@ public class UDPclient extends Thread{
 	    byte[] data = new byte[1024];
 	    data = text.getBytes();
 	    DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, PORT);
-	    try {
+	    try { 
 	    	socket.send(sendPacket);
 	    } catch(Exception e) {
 	    	e.printStackTrace();
@@ -76,7 +75,7 @@ public class UDPclient extends Thread{
 		if(data[0].equals("ACK" )) {
 			CONNECTION=true;
 			System.out.println("Welcome " + name +"!");
-			//players.put(name, new Player(0, 0));
+			players.put(name, new Player(name, 0, 0));
 			
 			//request list of player names
 		}else if(data[0].equals("NAK")){
@@ -85,35 +84,25 @@ public class UDPclient extends Thread{
 			}else {
 				System.out.println("Connection not allowed! Game in progress");
 			}
-		}else if(text.startsWith("MOV")) {
-			//new tank position
-		}else if(data[0].equals("PLYR")) {
-			players.put(data[1], new Player(0, 0));
-			//players.get(data[1]).visible = 0;
-		}else if(data[0].equals("HIT")) {
-			//tank hit
-			//update score
-		}else if(data[0].equals("WALL")) {
-			//update map
-		}else if(data[0].equals("PUA")) {
-			//update map and player attributes
-		}else if(data[0].equals("NPUS")) {
-			//update map
 		}else if(data[0].equals("POS")) {
-			//init tank positions
-			players.get(data[1]).setXpos(Float.parseFloat(data[2]));
-			players.get(data[1]).setYpos(Float.parseFloat(data[3]));
-		}else if(data[0].equals("MSG")) {
-			//chat
-			String msg = ""; 
-			for (String x: data)
-				msg = msg + " " + x;
-			Log.info(msg);
+			player = players.get(data[1]);
+			player.setXpos(Integer.parseInt(data[2]));
+			player.setYpos(Integer.parseInt(data[3]));
 		}else if(data[0].equals("IMG")) {
-			tankColor = data[2];
-			//players.get(data[1]).setImage(tankColor);
-		}else if(data[0].equals("START")) {
-			START = true;
+			player = players.get(data[1]);
+			player.setImage(data[2]);
+		}else if(data[0].equals("MOV")) {
+			player = players.get(data[1]);
+			player.setXpos(Integer.parseInt(data[2]));
+			player.setYpos(Integer.parseInt(data[3]));
+			player.setTankFace(Integer.parseInt(data[4]));
+		}else if(data[0].equals("HIT")) {
+			player = players.get(data[1]);
+			int hp = player.getCurrHealth()-1;
+			player.subtractHealth();
+			if(hp==0) {
+				players.remove(data[2]);
+			}
 		}
 	}
 	

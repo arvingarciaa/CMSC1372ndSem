@@ -47,7 +47,7 @@ public class Engine extends StateBasedGame{
 		gc.setVSync(true);
 	
 		new Resources();
-		this.addState(new MenuState());
+		this.addState(new MenuState()); 
 		this.addState(new GameState());
 		this.addState(new ManualState());
 		this.addState(new EndState());

@@ -14,12 +14,13 @@ public class Powerup {
 	private static boolean active = true;
 	private int posX, posY;
 	public static Rectangle powerupRectangle;
-	private Image texture = Resources.getImage("star1");
+	private Image texture;
 	private int selfDelta = 0;
 	
 	public Powerup() {
 		this.posX = 10*32;
 		this.posY = 8*32;
+		//texture = Resources.getImage("star1"); 
 		powerupRectangle = new Rectangle(posX, posY, 32, 32);
 	}
 

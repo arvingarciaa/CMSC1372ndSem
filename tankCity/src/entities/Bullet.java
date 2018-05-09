@@ -32,13 +32,12 @@ public class Bullet {
 			realSpeed.scale(delta/1000.0f);
 			bulletRectangle.setLocation(pos.getX()-10, pos.getY()-10);
 			
-			if(!GameState.hitsWall(bulletRectangle)){
+			if(!Board.hitsWall(bulletRectangle)){
 				pos.add(realSpeed);
 		    } else {
 		    	active = false;
 		    	//GameState.map.getCell
 		    }
-			
 			
 			lived += delta;
 			if(lived > MAX_LIFETIME) {
@@ -53,8 +52,6 @@ public class Bullet {
 			g.fillOval(pos.getX()-10, pos.getY()-10, 10, 10);			
 		}
 	}	
-	
-	
 	
 	public boolean isActive() {
 		return active;
