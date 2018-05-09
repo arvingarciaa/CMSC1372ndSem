@@ -3,143 +3,132 @@ package udpModule;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.net.SocketException;
 import java.util.HashMap;
 
 import org.newdawn.slick.util.Log;
 
 import entities.Player;
-import entities.PlayerInfo;
 
 public class UDPclient extends Thread{
-	DatagramSocket socket = null;
+	//variables for connecting to server
+	private DatagramSocket clientSocket;
+	private InetAddress ipAddress;
+	private int PORT;
+	public String playerName;
 
-	public String name;
-	public boolean CONNECTION = false;
-	public boolean START = false;
-	InetAddress address = null;
-	int PORT;
+	//variables for handling player data	
+	private boolean connection = false;
+	private boolean START = false;
 	private String tankColor;
-	
-	public HashMap<String, Player> players = new HashMap<>();
+	private HashMap<String, Player> players = new HashMap<>();
 
-	public UDPclient(String name, InetAddress ipAddress, int PORT) {
+	//constructor
+	public UDPclient(String playerName, InetAddress ipAddress, int PORT) {
 		this.PORT = PORT;
-		this.setPlayerName(name);
+		this.playerName = playerName;
 		try {
-			address = ipAddress;
-			socket = new DatagramSocket();
-			socket.setSoTimeout(5000);
-		} catch(Exception e) {
-			e.printStackTrace();;
+			this.ipAddress = ipAddress;
+			this.clientSocket = new DatagramSocket();
+			this.clientSocket.setSoTimeout(5000);
+		} catch (SocketException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	public String getPlayerName() {
-		return this.name;
-	}
-	
-	public void setPlayerName(String name) {
-		this.name = new String(name);
+	public void send(String text) {
+		byte[] data = text.getBytes();
+	    DatagramPacket sendPacket = new DatagramPacket(data, data.length, ipAddress, PORT);
+	    try {
+	    	clientSocket.send(sendPacket);
+	    	Log.info(" UDPclient sending data...");
+	    } catch(Exception e) {
+	    	e.printStackTrace();
+	    }
 	}
 	
 	public void receive() {
-	    try {
-		    byte[] data = new byte[100000];
-			DatagramPacket packet = new DatagramPacket(data, data.length);
-	    	socket.receive(packet);
-			String text = new String(packet.getData());
-			dataParser(text);
-	    } catch(SocketTimeoutException e) {
+		byte[] receiveData = new byte[100000];
+		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+    	try {
+		    clientSocket.receive(receivePacket);
+		    Log.info(" UDPclient parsing data...");
+		    dataParser(receivePacket);
 	    } catch(Exception e) {
-	    	e.printStackTrace();
-	    }
-	}
-	
-	public void send(String text) {
-		text = text + " " + this.name;
-	    byte[] data = new byte[1024];
-	    data = text.getBytes();
-	    DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, PORT);
-	    try {
-	    	socket.send(sendPacket);
-	    } catch(Exception e) {
-	    	e.printStackTrace();
-	    }
+//	    	Log.info(e.toString());
+	    }    	
 	}
 	
 	//process all the data received from server
-	public void dataParser(String text) throws UnknownHostException {
-		String[] data = text.trim().split(" ");
-		if(data[0].equals("ACK" )) {
-			CONNECTION=true;
-			System.out.println("Welcome " + name +"!");
+	public void dataParser(DatagramPacket receivePacket) {
+		String data = new String(receivePacket.getData());
+        
+		String[] text = data.trim().split(" ");
+		if(text[0].equals("ACK")) {
+			connection=true;
+			System.out.println("Welcome " + playerName +"!");
 			//players.put(name, new Player(0, 0));
 			
 			//request list of player names
-		}else if(data[0].equals("NAK")){
-			if(data[1].equals("NNA")) {
+		}else if(text[0].equals("NAK")){
+			if(text[1].equals("NNA")) {
 				System.out.println("Username already exists!");
 			}else {
 				System.out.println("Connection not allowed! Game in progress");
 			}
-		}else if(text.startsWith("MOV")) {
+		}else if(data.startsWith("MOV")) {
 			//new tank position
-		}else if(data[0].equals("PLYR")) {
-			players.put(data[1], new Player(0, 0));
+		}else if(text[0].equals("PLYR")) {
+			players.put(text[1], new Player(0, 0));
 			//players.get(data[1]).visible = 0;
-		}else if(data[0].equals("HIT")) {
+		}else if(text[0].equals("HIT")) {
 			//tank hit
 			//update score
-		}else if(data[0].equals("WALL")) {
+		}else if(text[0].equals("WALL")) {
 			//update map
-		}else if(data[0].equals("PUA")) {
+		}else if(text[0].equals("PUA")) {
 			//update map and player attributes
-		}else if(data[0].equals("NPUS")) {
+		}else if(text[0].equals("NPUS")) {
 			//update map
-		}else if(data[0].equals("POS")) {
+		}else if(text[0].equals("POS")) {
 			//init tank positions
-			players.get(data[1]).setXpos(Float.parseFloat(data[2]));
-			players.get(data[1]).setYpos(Float.parseFloat(data[3]));
-		}else if(data[0].equals("MSG")) {
+			players.get(text[1]).setXpos(Float.parseFloat(text[2]));
+			players.get(text[1]).setYpos(Float.parseFloat(text[3]));
+		}else if(text[0].equals("MSG")) {
 			//chat
 			String msg = ""; 
-			for (String x: data)
+			for (String x: text)
 				msg = msg + " " + x;
 			Log.info(msg);
-		}else if(data[0].equals("IMG")) {
-			tankColor = data[2];
+		}else if(text[0].equals("IMG")) {
+			tankColor = text[2];
 			//players.get(data[1]).setImage(tankColor);
-		}else if(data[0].equals("START")) {
+		}else if(text[0].equals("START")) {
 			START = true;
 		}
 	}
 	
-	public String getTankColor() {
-		return tankColor;
-	}
-	
+	//continuously receive from server
 	@Override
 	public void run() {
-		Log.info("Game Client Started.");
-		
-		while(CONNECTION==false) {
+		while(!connection) {
+			Log.info(" UDPclient establishing connection...");
 			try {
-	    	    send("CONNECT");
+	    	    send("CONNECT " + playerName);
 	    	    receive();
 	    	    //Thread.sleep(1000);
-			} catch(Exception e) {}			
+			} catch(Exception e) {
+				e.printStackTrace();
+			}			
 		}
 
 		while(true) {				
 			try {
 				receive();
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
+//				Thread.sleep(5000);
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}//continuously receive from server
+		}
 	}
 }

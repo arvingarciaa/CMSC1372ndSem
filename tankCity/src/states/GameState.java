@@ -88,11 +88,11 @@ public class GameState extends BasicGameState{
 		boardAtStart = true;
 		
 		//randomize x and y position of tank then check if blocked
-//		do {
-//			x = rand.nextInt(20)*32;
-//			y = rand.nextInt(15)*32;
-//		}while(blocked[x/32][y/32]==true);
-//		player = new Player(x,y);
+		do {
+			x = rand.nextInt(20)*32;
+			y = rand.nextInt(15)*32;
+		}while(blocked[x/32][y/32]==true);
+		player = new Player(x,y);
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class GameState extends BasicGameState{
 		    g.fill(rect);   
 		    font.loadGlyphs();
 		    udpclient = Engine.udpclient;
-		    playerName = udpclient.getPlayerName();
+		    playerName = udpclient.playerName;
 			text = playerName + ": " + Player.score;
 	        textWidth = font.getWidth(text);
 			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
@@ -171,7 +171,7 @@ public class GameState extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		tcpclient = Engine.tcpclient;
 		udpclient = Engine.udpclient;
-		players = udpclient.players;
+//		players = udpclient.players;
 		//get the chat messages
 		chatMessages = tcpclient.getMessages();
 		
@@ -192,7 +192,7 @@ public class GameState extends BasicGameState{
 			String data = textFieldChatInput.getText();
 			if (data.length()>0) {
 				data = data + "\n";
-				playerName = udpclient.getPlayerName();
+				playerName = udpclient.playerName;
 				Engine.tcpclient.sendToServer(playerName + ": " + data);
 				textFieldChatInput.setText("");
 			}

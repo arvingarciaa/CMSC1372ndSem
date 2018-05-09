@@ -41,7 +41,6 @@ public class Board {
 	private UDPclient udpclient;
 	private TCPclient tcpclient;
 	private int x,y;
-	private Random rand = new Random();
 	public static boolean[][] destroyed = new boolean[20][15];
 	private TextField textFieldChatInput;
 	private String playerName;
@@ -112,7 +111,7 @@ public class Board {
 		    g.fill(rect);   
 		    font.loadGlyphs();
 		    udpclient = Engine.udpclient;
-		    playerName = udpclient.getPlayerName();
+		    playerName = udpclient.playerName;
 			text = playerName + ": " + Player.score;
 	        textWidth = font.getWidth(text);
 			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
@@ -144,7 +143,7 @@ public class Board {
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		tcpclient = Engine.tcpclient;
 		udpclient = Engine.udpclient;
-		players = udpclient.players;
+//		players = udpclient.players;
 		//get the chat messages
 		chatMessages = tcpclient.getMessages();	
 				
@@ -163,7 +162,7 @@ public class Board {
 			String data = textFieldChatInput.getText();
 			if (data.length()>0) {
 				data = data + "\n";
-				playerName = udpclient.getPlayerName();
+				playerName = udpclient.playerName;
 				Engine.tcpclient.sendToServer(playerName + ": " + data);
 				textFieldChatInput.setText("");
 			}

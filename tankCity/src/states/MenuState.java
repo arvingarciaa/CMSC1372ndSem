@@ -65,13 +65,13 @@ public class MenuState extends BasicGameState{
 				InetAddress clientAddress;
 				try {
 					clientAddress = InetAddress.getByName(textFieldServer.getText());
-					int clientport = 9999;
+					int clientport = Integer.parseInt(textFieldPort.getText());
 					Engine.createConnection(clientName, clientAddress, clientport); 
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s.enterState(States.WAIT);
+				s.enterState(States.GAME);
 			}
 		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
 			if (Mouse.isButtonDown(0)) {
