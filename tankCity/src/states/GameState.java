@@ -1,7 +1,6 @@
 package states;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.awt.Font;
 
@@ -21,7 +20,6 @@ import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
 import entities.Powerup;
 import entities.Player;
-import entities.PlayerInfo;
 import tanks.Constants;
 import tanks.Engine;
 import tanks.Resources;
@@ -50,7 +48,6 @@ public class GameState extends BasicGameState{
 	private TextField textFieldChatInput;
 	private String playerName;
 	ArrayList<String> chatMessages;
-	private HashMap<String, Player> players = new HashMap<>();
 	private static Player player;
 	boolean boardAtStart = false;
 	private static Powerup powerup;
@@ -125,7 +122,7 @@ public class GameState extends BasicGameState{
 		    g.fill(rect);   
 		    font.loadGlyphs();
 		    udpclient = Engine.udpclient;
-		    playerName = udpclient.playerName;
+		    playerName = udpclient.getPlayerName();
 			text = playerName + ": " + Player.score;
 	        textWidth = font.getWidth(text);
 			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
@@ -192,7 +189,7 @@ public class GameState extends BasicGameState{
 			String data = textFieldChatInput.getText();
 			if (data.length()>0) {
 				data = data + "\n";
-				playerName = udpclient.playerName;
+				playerName = udpclient.getPlayerName();
 				Engine.tcpclient.sendToServer(playerName + ": " + data);
 				textFieldChatInput.setText("");
 			}

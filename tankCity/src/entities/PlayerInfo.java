@@ -10,7 +10,6 @@ public class PlayerInfo {
 	private int port;
 	private float xpos;
 	private float ypos;
-	private String tankColor;
 	public org.newdawn.slick.Image image;
 	
 	public PlayerInfo(String name, InetAddress address, int port) {

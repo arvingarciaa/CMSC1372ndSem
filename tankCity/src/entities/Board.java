@@ -1,10 +1,7 @@
 package entities;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,7 +9,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
@@ -111,7 +107,7 @@ public class Board {
 		    g.fill(rect);   
 		    font.loadGlyphs();
 		    udpclient = Engine.udpclient;
-		    playerName = udpclient.playerName;
+		    playerName = udpclient.getPlayerName();
 			text = playerName + ": " + Player.score;
 	        textWidth = font.getWidth(text);
 			font.drawString(Constants.WIDTH/2f - textWidth/2f, 100, text);
@@ -162,7 +158,7 @@ public class Board {
 			String data = textFieldChatInput.getText();
 			if (data.length()>0) {
 				data = data + "\n";
-				playerName = udpclient.playerName;
+				playerName = udpclient.getPlayerName();
 				Engine.tcpclient.sendToServer(playerName + ": " + data);
 				textFieldChatInput.setText("");
 			}

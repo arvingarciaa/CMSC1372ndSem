@@ -1,15 +1,11 @@
 package tanks;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Random;
-
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import entities.Player;
 import states.*;
 import tcpModule.TCPclient;
 import udpModule.UDPclient;

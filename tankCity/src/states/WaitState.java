@@ -13,15 +13,12 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import tanks.Constants;
-import tanks.Engine;
 import tanks.Resources;
-import udpModule.UDPclient;
 
 public class WaitState extends BasicGameState{
 	 private UnicodeFont font;
 	 private float textWidth;
 	 private String text = "";
-	 private UDPclient udpclient;
 	 private int timer;
 	 private Image img;
 	private float textHeight;
@@ -30,7 +27,6 @@ public class WaitState extends BasicGameState{
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		font = getNewFont("Arial", 35);
 		img = Resources.getImage("waitstate");
-        udpclient = Engine.udpclient;
 	}
 
 	@Override

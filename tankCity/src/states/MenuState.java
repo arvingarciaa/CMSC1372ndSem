@@ -12,8 +12,6 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import entities.Player;
-import tanks.Constants;
 import tanks.Engine;
 import tanks.Resources;
 
@@ -25,12 +23,8 @@ public class MenuState extends BasicGameState{
 	private Image img;
 	private UnicodeFont font;
 	private TextField textFieldServer, textFieldName, textFieldPort;
-	private float textWidth;
-	private String text;
-
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		// TODO Auto-generated method stub
 		font = getNewFont("Arial", 16);
 		img = Resources.getImage("menustate");
 		textFieldServer = new TextField(gc, gc.getDefaultFont(), 250, 230, 200, 25);
@@ -43,7 +37,6 @@ public class MenuState extends BasicGameState{
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
-		// TODO Auto-generated method stub
 		img.draw(0,0);
 		g.setColor(Color.black);
 		g.drawString("Server:", 180, 230);
@@ -68,7 +61,6 @@ public class MenuState extends BasicGameState{
 					int clientport = Integer.parseInt(textFieldPort.getText());
 					Engine.createConnection(clientName, clientAddress, clientport); 
 				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				s.enterState(States.GAME);
@@ -88,7 +80,6 @@ public class MenuState extends BasicGameState{
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return States.MENU;
 	}
 	
