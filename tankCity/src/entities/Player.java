@@ -40,6 +40,9 @@ public class Player {
     private Random rand = new Random();
     private String tankColor;
     private static float playerHealth;
+    private static boolean shield;
+    private static int shieldTimer = 10000, damage;
+    private int checker = 9999;
     
     public Player(String name, InetAddress address, int port) throws SlickException {
 		this.name = name;
@@ -58,12 +61,16 @@ public class Player {
 			bullets[i] =  new Bullet();
 		}
 		playerHealth = 4;
+		shield = false;
+		damage = 1;
 	}
     
     public Player(float x, float y) {
     	this.x = x;
     	this.y = y;
 		// width height of the player
+    	tankColor = "GREEN";
+    	image = Resources.getImage(tankColor, "up");
 		playerWidth = 29;
 		playerHeight = 29;
 		visible = 1;
@@ -73,6 +80,8 @@ public class Player {
 			bullets[i] =  new Bullet();
 		}
 		playerHealth = 4;
+		shield = false;
+		damage = 1;
     }
     
     public void render(GameContainer gc, Graphics g) {
@@ -84,6 +93,11 @@ public class Player {
     	g.drawRect(x, y-7, playerWidth, 5);
     	g.setColor(Color.green);
     	g.fillRect(x, y-7,Math.round(playerWidth * (playerHealth/4)), 5);
+    	
+    	if(Player.isShieldActive()) {
+    		g.setColor(Color.gray);
+        	g.fillRect(x, y-7,Math.round(playerWidth * (playerHealth/4)), 5);
+    	}
 	};
 	
 	public void update(GameContainer gc, int delta) throws SlickException {
@@ -95,7 +109,13 @@ public class Player {
 		float deltaX = x;
 		float deltaY = y;
 		
-		
+		if (Player.isShieldActive()) {
+			if(shieldTimer > 0) {
+				shieldTimer -= delta;
+			} else if (shieldTimer <= 0) {
+				shield = false;
+			}
+		} 
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
 	        deltaY -= delta * speed;
 			image = Resources.getImage(tankColor, "up");
@@ -128,13 +148,22 @@ public class Player {
 	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
 	    }
-	    
-	    if(GameState.collidesWith(playerBox, Powerup.powerupRectangle)) {
-	    	Player.addHealth();
-	    	Powerup.setActiveToFalse();
+	   
+	    checker = GameState.collidesWith(playerBox);
+	    if(checker != 9999) {
+	    	if(GameState.tokens.get(checker).getType()==Constants.HEART) {
+	    		System.out.println("Add 1 Health");
+	    		Player.addHealth();	
+	    	} else if (GameState.tokens.get(checker).getType()==Constants.SHIELD) {
+	    		System.out.println("Shield Active");
+	    		Player.addShield();
+	    	} else if (GameState.tokens.get(checker).getType()==Constants.STAR) {
+	    		System.out.println("Superstar Active");
+	    		Player.addDamage();
+	    	}
+	    	GameState.tokens.get(checker).setActiveToFalse();
 	    }
 
-		
 		if(bullet_interval > FIRE_RATE && input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
 			
 			if(tank_face == 0) bullets[current] = new Bullet(new Vector2f(x+22,y), new Vector2f(0,-200));
@@ -165,24 +194,34 @@ public class Player {
 		return (int)playerHealth;
 	}
 	
-	public static void subtractHealth() {
-		if(playerHealth > 0) playerHealth--;
+	public static void subtractHealthBy(int damage) {
+		if(playerHealth > 0) playerHealth-=damage;
+	}
+	
+	public static boolean isShieldActive() {
+		return shield;
 	}
 	
 	public static void addHealth() {
 		playerHealth++;
 	}
 	
+	public static int getDamage() {
+		return damage;
+	}
+	
+	public static void addShield() {
+		shield = true;
+	}
+	
+	public static void addDamage() {
+		damage++;
+	}
+	
 	public void setAddress(InetAddress address) {
 		this.address = address;
 	}
 	
-	public boolean areKeysPressed(Input input) {
-		if(input.isKeyDown(Input.KEY_W) || input.isKeyDown(Input.KEY_S) || input.isKeyDown(Input.KEY_A ) || input.isKeyDown(Input.KEY_D) || input.isKeyDown(Input.KEY_UP) || input.isKeyDown(Input.KEY_LEFT) || input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_DOWN)) {
-			return true;
-		} 
-		return false;
-	}
 
 	/**
 	 * Returns the port number

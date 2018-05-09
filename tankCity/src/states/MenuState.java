@@ -59,25 +59,25 @@ public class MenuState extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		int posX = Mouse.getX();
 		int posY = Mouse.getY();
-		if ((posX > 260 && posX < 412) && (posY > 209 && posY < 249)) { //for Start Game
+		if ((posX > 248 && posX < 385) && (posY > 182 && posY < 228)) { //for Start Game
 			if (Mouse.isButtonDown(0)) {
 				String clientName = textFieldName.getText();
 				InetAddress clientAddress;
 				try {
 					clientAddress = InetAddress.getByName(textFieldServer.getText());
 					int clientport = 9999;
-					Engine.createConnection(clientName, clientAddress, clientport); 
+//					Engine.createConnection(clientName, clientAddress, clientport); 
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s.enterState(States.WAIT);
+				s.enterState(States.GAME);
 			}
-		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
+		} else if ((posX > 208 && posX < 431) && (posY > 125 && posY < 171)) {
 			if (Mouse.isButtonDown(0)) {
 				s.enterState(States.MANUAL);
 			}
-		} else if((posX > 296 && posX < 373) && (posY > 109 && posY < 149)) {
+		} else if((posX > 260 && posX < 377) && (posY > 67 && posY < 115)) {
 			if (Mouse.isButtonDown(0)) {
 				System.exit(0);
 			}

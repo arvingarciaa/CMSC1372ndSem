@@ -19,9 +19,9 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import entities.Bullet;
-import entities.Powerup;
 import entities.Player;
 import entities.PlayerInfo;
+import entities.Powerup;
 import tanks.Constants;
 import tanks.Engine;
 import tanks.Resources;
@@ -35,7 +35,6 @@ public class GameState extends BasicGameState{
 	public static boolean blocked[][];
 	public static boolean dest[][];
 	private static ArrayList<Rectangle> blocks;
-	public static int tileSize = 32;
 	public static int collX, collY;
 	private static float alpha = 0;
 	private UnicodeFont font;
@@ -44,8 +43,6 @@ public class GameState extends BasicGameState{
 	private static int pause = 0;
 	private UDPclient udpclient;
 	private TCPclient tcpclient;
-	private int x,y;
-	private Random rand = new Random();
 	public static boolean[][] destroyed = new boolean[20][15];
 	private TextField textFieldChatInput;
 	private String playerName;
@@ -53,12 +50,25 @@ public class GameState extends BasicGameState{
 	private HashMap<String, Player> players = new HashMap<>();
 	private static Player player;
 	boolean boardAtStart = false;
-	private static Powerup powerup;
+	public static ArrayList<Powerup> tokens;
+	private static ArrayList<Rectangle> tokenRectangle;
+	private Random rand = new Random();
+	private int x, y;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
 		map = new TiledMap("res/map.tmx","res");
-		powerup = new Powerup();
+		
+		//instantiates the number of tokens, then assigns them to the array
+		tokens = new ArrayList<Powerup>();
+		tokens.add(new Powerup(3*Constants.TILE_SIZE, 12*Constants.TILE_SIZE, Constants.SHIELD));
+		tokens.add(new Powerup(5*Constants.TILE_SIZE, 12*Constants.TILE_SIZE, Constants.HEART));
+		tokens.add(new Powerup(7*Constants.TILE_SIZE, 12*Constants.TILE_SIZE, Constants.STAR));
+		tokenRectangle = new ArrayList<Rectangle>();
+		tokenRectangle.add(new Rectangle(3 * Constants.TILE_SIZE, 12 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE)); // then instantiates the rectangles hitBox
+		tokenRectangle.add(new Rectangle(5 * Constants.TILE_SIZE, 12 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE)); // then instantiates the rectangles hitBox
+		tokenRectangle.add(new Rectangle(7 * Constants.TILE_SIZE, 12 * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE)); // then instantiates the rectangles hitBox
+		
 		solidsLayer = map.getLayerIndex("solids");
 		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
 		dest = new boolean[Constants.WIDTH][Constants.HEIGHT];
@@ -73,7 +83,7 @@ public class GameState extends BasicGameState{
 		        String destroyable = map.getTileProperty(tileID, "destroyable", "false");
 
 		        if(value.equals("true")) {
-		            blocks.add(new Rectangle(i * tileSize, j * tileSize, tileSize, tileSize));
+		            blocks.add(new Rectangle(i * Constants.TILE_SIZE, j * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE));
 		            blocked[i][j] = true;
 		            if(destroyable.equals("true")) {
 		            	dest[i][j] = true;	
@@ -88,24 +98,24 @@ public class GameState extends BasicGameState{
 		boardAtStart = true;
 		
 		//randomize x and y position of tank then check if blocked
-//		do {
-//			x = rand.nextInt(20)*32;
-//			y = rand.nextInt(15)*32;
-//		}while(blocked[x/32][y/32]==true);
-//		player = new Player(x,y);
+		do {
+			x = rand.nextInt(20)*32;
+			y = rand.nextInt(15)*32;
+		}while(blocked[x/32][y/32]==true);
+		player = new Player(x,y);
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		map.render(0,0,0,0,640,480);
 		for(int x=0; x < map.getWidth(); x++) {
-				for(int y=0; y < map.getHeight(); y++) {
-					if(destroyed[x][y] == true) {
-						Image texture = Resources.getImage("GREEN_grass");
-			            g.drawImage(texture, x*32, y*32, null);
-			       }
-				}
+			for(int y=0; y < map.getHeight(); y++) {
+				if(destroyed[x][y] == true) {
+					Image texture = Resources.getImage("GREEN_grass");
+		            g.drawImage(texture, x*32, y*32, null);
+		       }
 			}
+		}
 //		players = udpclient.players;
 //		Object[] currPlayers = players.keySet().toArray();
 //		for(int i=0; i<players.size(); i++) {
@@ -138,9 +148,6 @@ public class GameState extends BasicGameState{
 			textWidth = font.getWidth(text);
 			font.drawString(Constants.WIDTH/2f - textWidth/2f, 240, text);
 			 
-			text = playerName + ": " + Player.score;
-			textWidth = font.getWidth(text);
-			font.drawString(Constants.WIDTH/2f - textWidth/2f, 310, text);
 			
 			if (alpha < 0.5f)
 		        alpha += 0.01f;
@@ -153,27 +160,31 @@ public class GameState extends BasicGameState{
 		}
 		
 		textFieldChatInput.render(gc, g);
-		powerup.render(gc, g);
+		
+
+		for(Powerup t : tokens) {
+			t.render(gc,g);
+		}
 		
 //		render chat messages
 		int x_position = 15;
 		int y_position = Constants.TOTAL_HEIGHT-50;
-		for(int i=chatMessages.size()-1; i>=0; i--) {
-			if(chatMessages.isEmpty()) break;
-			if (y_position > Constants.HEIGHT)
-				g.drawString(chatMessages.get(i), x_position, y_position);
-			y_position-=13;
-		}
+//		for(int i=chatMessages.size()-1; i>=0; i--) {
+//			if(chatMessages.isEmpty()) break;
+//			if (y_position > Constants.HEIGHT)
+//				g.drawString(chatMessages.get(i), x_position, y_position);
+//			y_position-=13;
+//		}
 		
 	}	
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
-		tcpclient = Engine.tcpclient;
-		udpclient = Engine.udpclient;
-		players = udpclient.players;
+//		tcpclient = Engine.tcpclient;
+//		udpclient = Engine.udpclient;
+//		players = udpclient.players;
 		//get the chat messages
-		chatMessages = tcpclient.getMessages();
+//		chatMessages = tcpclient.getMessages();
 		
 				
 		if (gc.getInput().isKeyPressed(Input.KEY_TAB))	//to see score
@@ -185,7 +196,9 @@ public class GameState extends BasicGameState{
 		if (!(mouseX>=0 && mouseX<=Constants.WIDTH && mouseY>=Constants.HEIGHT)) {
 			player.update(gc, delta);
 		}
-		powerup.update(delta);
+		for(Powerup t : tokens) {
+			t.update(delta);
+		}
 		
 		//getting chat input
 		if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
@@ -213,11 +226,16 @@ public class GameState extends BasicGameState{
 	    return false;
 	}
 	
-	public static boolean collidesWith(Rectangle rec1, Rectangle rec2) {
-		if(rec1.intersects(rec2)) {
-			return true;
+	public static int collidesWith(Rectangle rec1) {
+		int i = 0;
+		for(Rectangle t : tokenRectangle) {
+			if(rec1.intersects(t)) {
+				tokenRectangle.remove(t);
+				return i;
+			}
+			i++;
 		}
-		return false;
+		return 9999;
 	}
 	
 	public static boolean hitsWall(Rectangle rec1) { //for bullet
@@ -228,7 +246,9 @@ public class GameState extends BasicGameState{
 		        		if(dest[collX][collY] == true)	{
 		        			blocks.remove(i);
 		        			Player.score++;
-		        			Player.subtractHealth();
+		        			if(!Player.isShieldActive()) {
+			        			Player.subtractHealthBy(Player.getDamage());	
+		        			}
 		        			destroyed[collX][collY] = true;
 		        		}
 		            return true;

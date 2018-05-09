@@ -37,6 +37,10 @@ public class Resources {
 			images.put("GREEN_grass", loadImage("res/grass.png"));
 			images.put("star1", loadImage("res/star1.png"));
 			images.put("star2", loadImage("res/star2.png"));
+			images.put("heart1", loadImage("res/heart1.png"));
+			images.put("heart2", loadImage("res/heart2.png"));
+			images.put("shield1", loadImage("res/shield1.png"));
+			images.put("shield2", loadImage("res/shield2.png"));
 			images.put("menustate", loadImage("res/menustate.jpg"));
 			images.put("instructions", loadImage("res/instructions.jpg"));
 			images.put("waitstate", loadImage("res/waitstate.png"));
