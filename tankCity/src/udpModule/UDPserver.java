@@ -15,11 +15,12 @@ import org.newdawn.slick.util.Log;
 
 import entities.*;
 import states.GameState;
+import tanks.Constants;
 
 public class UDPserver extends Thread{
 	private int PORT = 9999; 
 	private DatagramSocket serverSocket = null;
-	private HashMap<String, Player> players = null;
+	private HashMap<String, Player> players;
 	private List<String> tankColors = new ArrayList<String>();
 	private int gameState = 0;
 	private Board board;
@@ -37,6 +38,7 @@ public class UDPserver extends Thread{
 			e.printStackTrace();
 		}
 	    players = new HashMap<String, Player>();
+//	    board = new Board();
 	 }
 	 
 	 public void send(String text, InetAddress address, int port) {
@@ -69,27 +71,40 @@ public class UDPserver extends Thread{
 	        InetAddress address = receivePacket.getAddress();
 	        int port = receivePacket.getPort();
 	        String[] text = data.trim().split(" ");
-//	        Log.info(" UDPserver: " + text[0] + " " + text[1]);
-        	
+	        Player player;
+	        System.out.println(data);
 			if(text[0].equals("CONNECT")) {
-//				Log.info(" UDPserver: " + gameState);
 	        	if(gameState == 0) {
-//	        		Log.info( text[1] );
 	            	addPlayer(text[1], address, port);
-//	            	System.out.println(players.keySet());
-	            	//establish client connection
 	            }else {
 	            	send("NAK GIP", address, port);
 	            }
 			}else if(text[0].equals("HIT")) {
-				//tank hit by another tank
-				//remove destroyed tank from game
-				//update score
-				removePlayer(text[2]);
-			}else if(text[0].equals("POS")){
-				players.get(text[1]).setXpos(Float.parseFloat(text[2]));
-				players.get(text[1]).setYpos(Float.parseFloat(text[3]));
-			}else{
+				player = players.get(text[1]);
+				int hp = player.getCurrHealth()-1;
+//				player.subtractHealth();
+				if(hp==0) {
+					removePlayer(text[2]);
+				}
+			}else if(text[0].equals("MOV")) {
+				player = players.get(text[1]);
+				player.setXpos(Integer.parseInt(text[2]));
+				player.setYpos(Integer.parseInt(text[3]));
+				player.setTankFace(Integer.parseInt(text[4]));
+				sendToAll(data);
+			}else if(text[0].equals("PUA")) {
+				player = players.get(text[1]);
+				int type = Integer.parseInt(text[2]);
+				if(type==Constants.HEART) {
+					player.addHealth();
+				}else if(type==Constants.STAR) {
+					//change bullet
+				}else if(type==Constants.SHIELD) {
+					//put shield
+				}
+				sendToAll(data);
+			}else if(text[0].equals("NPU")) {
+				//update to server's board
 				sendToAll(data);
 			}
 		}//process all the data received from clients
@@ -98,7 +113,7 @@ public class UDPserver extends Thread{
 		Object[] names = players.keySet().toArray();
 		for(int i=0; i<players.size(); i++) {
 			byte[] data = text.getBytes();
-		    DatagramPacket sendPacket = new DatagramPacket(data, data.length, players.get(names[i]).getAddress(), players.get(names[i]).getPort());
+		    DatagramPacket sendPacket = new DatagramPacket(data, data.length, players.get(names[i]).address, players.get(names[i]).port);
 		    try {
 		    	serverSocket.send(sendPacket);
 		    } catch(Exception e) {
@@ -113,16 +128,17 @@ public class UDPserver extends Thread{
 		tankColors.add("PINK");
 		tankColors.add("RED");
 		tankColors.add("GRAY");
-		try {
+		try { 
 			if(players.get(name)==null) {
-				send("ACK", address, port);				
-				sendToAll("PLYR " + name);
+				send("ACK", address, port);
 				String tankColor = tankColors.get(new Random().nextInt(tankColors.size()));	
 				player = createPlayer(name);
-				player.setImage(tankColor);			
+				player.setImage(tankColor);
+				send("PLYR " + name, address, port);
+				send("POS "+ name + " " + player.getXpos() + " " + player.getYpos(), address, port);
+				send("IMG " + name + " " + tankColor, address, port);
 				players.put(name, player);		
-				tankColors.remove(tankColor);				
-				
+				tankColors.remove(tankColor);
 				Log.info(" " + name + " has joined the game.");
 			}else {
 				send("NAK NNA", address, port);
@@ -134,7 +150,7 @@ public class UDPserver extends Thread{
 	
 	public void removePlayer(String name) {
 		Player dead = players.get(name);
-		send("Game Over", dead.getAddress(), dead.getPort());
+		send("Game Over", dead.address, dead.port);
 		System.out.println(players.keySet());
 		players.remove(name);
 		System.out.println(players.keySet());
@@ -167,13 +183,7 @@ public class UDPserver extends Thread{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-        		try {
-					board = new Board();
-				} catch (SlickException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        		board.initializeBoard(players);
+        		//board.initializeBoard(players);
         		receive();
         	}else if(gameState == 2) {
         		//game in progress
@@ -188,9 +198,9 @@ public class UDPserver extends Thread{
 		do {
 			x = rand.nextInt(20)*32;
 			y = rand.nextInt(15)*32;
-		}while(GameState.blocked[x/32][y/32]==true);
-		player = new Player(x,y);
-		GameState.blocked[x][y]=true;
+		}while(Board.blocked[x/32][y/32]==true);
+		player = new Player(name,x,y);
+		Board.blocked[x][y]=true;
 		return player;
 	}
 	

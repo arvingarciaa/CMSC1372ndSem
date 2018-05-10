@@ -6,7 +6,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
-import states.GameState;
 import tanks.Constants;
 import tanks.Resources;
 
@@ -15,7 +14,7 @@ public class Powerup {
 	private boolean active = true;
 	private int posX, posY;
 	public static Rectangle powerupRectangle;
-	private Image texture = Resources.getImage("star1");
+	private Image texture;
 	private int selfDelta = 0;
 	private int type;
 	

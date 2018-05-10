@@ -55,6 +55,7 @@ public class MenuState extends BasicGameState{
 		ttf.drawString(210, 343, "Port:", Color.black);		
 		
 		
+		g.setColor(Color.white);
 		textFieldServer.render(gc, g);
 		textFieldName.render(gc, g);	
 		textFieldPort.render(gc, g);
@@ -87,7 +88,6 @@ public class MenuState extends BasicGameState{
 				System.exit(0);
 			}
 		}
-		
 		
 	}
 

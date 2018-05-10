@@ -45,7 +45,6 @@ public class Resources {
 			images.put("instructions", loadImage("res/instructions.jpg"));
 			images.put("waitstate", loadImage("res/waitstate.png"));
 			images.put("endstate", loadImage("res/endstate.jpg"));
-
 			images.put("GREEN_up_shield", loadImage("res/up2_shield.png"));
 			images.put("GREEN_down_shield", loadImage("res/down2_shield.png"));
 			images.put("GREEN_left_shield", loadImage("res/left2_shield.png"));
@@ -66,9 +65,12 @@ public class Resources {
 			images.put("GRAY_down_shield", loadImage("res/gray_down_shield.png"));
 			images.put("GRAY_left_shield", loadImage("res/gray_left_shield.png"));
 			images.put("GRAY_right_shield", loadImage("res/gray_right_shield.png"));
+			images.put("chatbg", loadImage("res/chatbg.jpg"));
+			images.put("asphalt", loadImage("res/asphalt.jpg"));
+			images.put("metal", loadImage("res/metal.jpg"));
+			images.put("brick", loadImage("res/brick.png"));
 		} catch (SlickException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 	}
 

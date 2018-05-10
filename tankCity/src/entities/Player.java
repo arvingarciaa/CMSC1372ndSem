@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
 import tanks.*;
+import udpModule.UDPclient;
 import states.GameState;
 
 import java.net.InetAddress;
@@ -29,26 +30,27 @@ public class Player {
 	
 	private float speed = 0.1f;
     public String name;
-    private InetAddress address;
-    private int port;
     public Bullet[] bullets;
     private int current = 0;
     private static int FIRE_RATE = 500;
     private int bullet_interval;
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
     public static int score;
-    private Random rand = new Random();
     private String tankColor;
-    private static float playerHealth;
+    private static int playerHealth;
     private static boolean shield, star;
     private static int shieldTimer = 10000, damage;
     private int checker = 9999;
+	public InetAddress address;
+	public int port;
+	private Random rand = new Random();
+	private UDPclient udpclient;
     
     public Player(String name, InetAddress address, int port) throws SlickException {
 		this.name = name;
 		this.address = address;
 		this.port = port;
-		x = rand.nextInt(Constants.WIDTH);
+		x = rand .nextInt(Constants.WIDTH);
 		y = rand.nextInt(Constants.HEIGHT);
 		// width height of the player
 		playerWidth = 29;
@@ -66,7 +68,7 @@ public class Player {
 		damage = 1;
 	}
     
-    public Player(float x, float y) {
+    public Player(String name, float x, float y) {
     	this.x = x;
     	this.y = y;
 		// width height of the player
@@ -90,7 +92,6 @@ public class Player {
     	if (image != null) {
     		image.draw(x,y,playerWidth,playerHeight,color);
     	}
-//    	System.out.println("playerHealth: " + playerHealth + "\n playerWidth: " + (int) (playerWidth * (3/4)));
     	g.setColor(Color.black);
     	g.drawRect(x, y-7, playerWidth, 5);
     	g.setColor(Color.green);
@@ -103,6 +104,11 @@ public class Player {
 	};
 	
 	public void update(GameContainer gc, int delta) throws SlickException {
+//		udpclient = Engine.udpclient;
+//		address = udpclient.address;
+//		port = udpclient.PORT;
+//		
+		
 		Input input = gc.getInput();
 		speed = (float) 0.08;
 		bullet_interval += delta;
@@ -126,6 +132,7 @@ public class Player {
 	        	image = Resources.getImageStar(tankColor, "up");
 	        }
 			tank_face = 0;
+//			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.UP);
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
 			deltaY += delta * speed;
@@ -135,6 +142,7 @@ public class Player {
 	        	image = Resources.getImageStar(tankColor, "down");
 	        }
 			tank_face = 2;
+//			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.DOWN);
 		}
 		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
 			deltaX += speed*delta;
@@ -144,6 +152,7 @@ public class Player {
 	        	image = Resources.getImageStar(tankColor, "right");
 	        }
 			tank_face = 3;
+//			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.RIGHT);
 		}
 		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
 			deltaX -= speed*delta;
@@ -153,6 +162,7 @@ public class Player {
 	        	image = Resources.getImageStar(tankColor, "left");
 	        }
 			tank_face = 1;
+//			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.LEFT);
 		}
 		
 		float clipX = x;
@@ -161,12 +171,13 @@ public class Player {
 		playerBox.setLocation(deltaX,y);
 	    if(!GameState.intersects(playerBox)){
 	        x = deltaX;
+//	        udpclient.send("WALL " + name);
 	    }
 	    playerBox.setLocation(clipX,deltaY);  //checker for wall X collision
 	    if(!GameState.intersects(playerBox)){
 	        y = deltaY;
+//	        udpclient.send("WALL " + name);
 	    }
-	   
 	    checker = GameState.collidesWith(playerBox);
 	    if(checker != 9999) {
 	    	if(GameState.tokens.get(checker).getType()==Constants.HEART) {
@@ -183,7 +194,6 @@ public class Player {
 	    }
 
 		if(bullet_interval > FIRE_RATE && input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-			
 			if(tank_face == 0) bullets[current] = new Bullet(new Vector2f(x+22,y), new Vector2f(0,-200));
 			if(tank_face == 1) bullets[current] = new Bullet(new Vector2f(x,y+22), new Vector2f(-200, 0));
 			if(tank_face == 2) bullets[current] = new Bullet(new Vector2f(x+22,y+32), new Vector2f(0, 200));
@@ -199,19 +209,11 @@ public class Player {
 		}
 		
 	}
+	
+	public int getCurrHealth() {
+		return playerHealth;
+	}
 
-	/**
-	 * Returns the address
-	 * @return
-	 */
-	public InetAddress getAddress(){
-		return address;
-	}
-	
-	public static int getCurrHealth() {
-		return (int)playerHealth;
-	}
-	
 	public static void subtractHealthBy(int damage) {
 		if(playerHealth > 0) playerHealth-=damage;
 	}
@@ -254,15 +256,7 @@ public class Player {
 		image = Resources.getImage(tankColor,"up");
 		this.tankColor = tankColor;
 	}
-	
-	public void setPort(int port) {
-		this.port = port;
-	}
 
-	/**
-	 * Returns the name of the player
-	 * @return
-	 */
 	public String getName(){
 		return name;
     }
@@ -286,7 +280,10 @@ public class Player {
 	public void setYpos(float ypos) {
 		this.y = ypos;
 	}
-
+	
+	public void setTankFace(int face) {
+		this.tank_face = face;
+	}
     public String toString(){
 		String retval="";
 		retval+="PLAYER ";

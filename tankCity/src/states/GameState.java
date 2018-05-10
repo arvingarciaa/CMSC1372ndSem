@@ -1,10 +1,8 @@
 package states;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.awt.Font;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -18,14 +16,13 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
+
 import entities.Bullet;
 import entities.Player;
-import entities.PlayerInfo;
 import entities.Powerup;
 import tanks.Constants;
 import tanks.Engine;
 import tanks.Resources;
-import tcpModule.TCPclient;
 import udpModule.UDPclient;
 
 public class GameState extends BasicGameState{
@@ -42,12 +39,10 @@ public class GameState extends BasicGameState{
 	private String text;
 	private static int pause = 0;
 	private UDPclient udpclient;
-	private TCPclient tcpclient;
 	public static boolean[][] destroyed = new boolean[20][15];
 	private TextField textFieldChatInput;
 	private String playerName;
 	ArrayList<String> chatMessages;
-	private HashMap<String, Player> players = new HashMap<>();
 	private static Player player;
 	boolean boardAtStart = false;
 	public static ArrayList<Powerup> tokens;
@@ -102,9 +97,9 @@ public class GameState extends BasicGameState{
 			x = rand.nextInt(20)*32;
 			y = rand.nextInt(15)*32;
 		}while(blocked[x/32][y/32]==true);
-		player = new Player(x,y);
+		player = new Player(playerName,x,y);
 	}
-
+	
 	@Override
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 		map.render(0,0,0,0,640,480);
@@ -166,16 +161,6 @@ public class GameState extends BasicGameState{
 			t.render(gc,g);
 		}
 		
-//		render chat messages
-		int x_position = 15;
-		int y_position = Constants.TOTAL_HEIGHT-50;
-//		for(int i=chatMessages.size()-1; i>=0; i--) {
-//			if(chatMessages.isEmpty()) break;
-//			if (y_position > Constants.HEIGHT)
-//				g.drawString(chatMessages.get(i), x_position, y_position);
-//			y_position-=13;
-//		}
-		
 	}	
 
 	@Override
@@ -210,11 +195,6 @@ public class GameState extends BasicGameState{
 				textFieldChatInput.setText("");
 			}
 		}		
-	}
-
-	@Override
-	public int getID() {
-		return States.GAME;
 	}
 
 	public static boolean intersects(Rectangle rec1) { //for tank to wall
@@ -264,6 +244,10 @@ public class GameState extends BasicGameState{
 		font.getEffects().add(new ColorEffect(java.awt.Color.white));
 		return (font);
 	}
+
+
+	@Override
+	public int getID() {
+		return States.GAME;
+	}
 }
-
-

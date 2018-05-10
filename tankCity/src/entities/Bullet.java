@@ -39,7 +39,6 @@ public class Bullet {
 		    	//GameState.map.getCell
 		    }
 			
-			
 			lived += delta;
 			if(lived > MAX_LIFETIME) {
 				active = false;
@@ -53,8 +52,6 @@ public class Bullet {
 			g.fillOval(pos.getX()-10, pos.getY()-10, 10, 10);			
 		}
 	}	
-	
-	
 	
 	public boolean isActive() {
 		return active;
