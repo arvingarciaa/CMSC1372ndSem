@@ -40,7 +40,7 @@ public class Player {
     private Random rand = new Random();
     private String tankColor;
     private static float playerHealth;
-    private static boolean shield;
+    private static boolean shield, star;
     private static int shieldTimer = 10000, damage;
     private int checker = 9999;
     
@@ -62,6 +62,7 @@ public class Player {
 		}
 		playerHealth = 4;
 		shield = false;
+		star = false;
 		damage = 1;
 	}
     
@@ -81,6 +82,7 @@ public class Player {
 		}
 		playerHealth = 4;
 		shield = false;
+		star = false;
 		damage = 1;
     }
     
@@ -118,22 +120,38 @@ public class Player {
 		} 
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
 	        deltaY -= delta * speed;
-			image = Resources.getImage(tankColor, "up");
+	        if(!star) {
+				image = Resources.getImage(tankColor, "up");	
+	        } else {
+	        	image = Resources.getImageStar(tankColor, "up");
+	        }
 			tank_face = 0;
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
 			deltaY += delta * speed;
-			image = Resources.getImage(tankColor, "down");
+			if(!star) {
+				image = Resources.getImage(tankColor, "down");	
+	        } else {
+	        	image = Resources.getImageStar(tankColor, "down");
+	        }
 			tank_face = 2;
 		}
 		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
 			deltaX += speed*delta;
-			image = Resources.getImage(tankColor, "right");
+			if(!star) {
+				image = Resources.getImage(tankColor, "right");	
+	        } else {
+	        	image = Resources.getImageStar(tankColor, "right");
+	        }
 			tank_face = 3;
 		}
 		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
 			deltaX -= speed*delta;
-			image = Resources.getImage(tankColor, "left");
+			if(!star) {
+				image = Resources.getImage(tankColor, "left");	
+	        } else {
+	        	image = Resources.getImageStar(tankColor, "left");
+	        }
 			tank_face = 1;
 		}
 		
@@ -215,6 +233,7 @@ public class Player {
 	}
 	
 	public static void addDamage() {
+		star = true;
 		damage++;
 	}
 	

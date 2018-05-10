@@ -45,6 +45,27 @@ public class Resources {
 			images.put("instructions", loadImage("res/instructions.jpg"));
 			images.put("waitstate", loadImage("res/waitstate.png"));
 			images.put("endstate", loadImage("res/endstate.jpg"));
+
+			images.put("GREEN_up_shield", loadImage("res/up2_shield.png"));
+			images.put("GREEN_down_shield", loadImage("res/down2_shield.png"));
+			images.put("GREEN_left_shield", loadImage("res/left2_shield.png"));
+			images.put("GREEN_right_shield", loadImage("res/right2_shield.png"));
+			images.put("BLUE_up_shield", loadImage("res/blue_up_shield.png"));
+			images.put("BLUE_down_shield", loadImage("res/blue_down_shield.png"));
+			images.put("BLUE_left_shield", loadImage("res/blue_left_shield.png"));
+			images.put("BLUE_right_shield", loadImage("res/blue_right_shield.png"));
+			images.put("PINK_up_shield", loadImage("res/pink_up_shield.png"));
+			images.put("PINK_down_shield", loadImage("res/pink_down_shield.png"));
+			images.put("PINK_left_shield", loadImage("res/pink_left.png"));
+			images.put("PINK_right_shield", loadImage("res/pink_right_shield.png"));
+			images.put("RED_up_shield", loadImage("res/red_up_shield.png"));
+			images.put("RED_down_shield", loadImage("res/red_down_shield.png"));
+			images.put("RED_left_shield", loadImage("res/red_left_shield.png"));
+			images.put("RED_right_shield", loadImage("res/red_right_shield.png"));
+			images.put("GRAY_up_shield", loadImage("res/gray_up_shield.png"));
+			images.put("GRAY_down_shield", loadImage("res/gray_down_shield.png"));
+			images.put("GRAY_left_shield", loadImage("res/gray_left_shield.png"));
+			images.put("GRAY_right_shield", loadImage("res/gray_right_shield.png"));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,5 +82,9 @@ public class Resources {
 	
 	public static Image getImage(String tankColor, String name) {
 		return images.get(tankColor+"_"+name);
+	}
+	
+	public static Image getImageStar(String tankColor, String name) {
+		return images.get(tankColor+"_"+name+"_shield");
 	}
 }
