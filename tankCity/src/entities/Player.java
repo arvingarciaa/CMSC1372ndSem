@@ -29,22 +29,25 @@ public class Player {
 	public static int position;
 	
 	private float speed = 0.1f;
-    public String name;
+    private String name;
     public Bullet[] bullets;
     private int current = 0;
     private static int FIRE_RATE = 500;
     private int bullet_interval;
     private int tank_face = 0;  // 0 for up, 1 for left, 2 for down, 3 for right
     public static int score;
-    private String tankColor;
+    public String tankColor;
     private int playerHealth;
     private UDPclient udpclient;
     public InetAddress ipaddress;
     public int port;
     
-    public Player(String name, float x, float y) {
+    public Player(String name, float x, float y, InetAddress ipaddress, int port) {
     	this.x = x;
     	this.y = y;
+    	this.name = name;
+    	this.ipaddress = ipaddress;
+    	this.port = port;
 		// width height of the player
 		playerWidth = 29;
 		playerHeight = 29;
@@ -55,13 +58,12 @@ public class Player {
 			bullets[i] =  new Bullet();
 		}
 		playerHealth = 4;
-		tankColor = "PINK";
 		//image = Resources.getImage(tankColor,"up");
     }
     
     public void render(GameContainer gc, Graphics g) {
     	if (image != null) {
-    		image.draw(x,y,playerWidth,playerHeight,color);
+    		image.draw(x,y,playerWidth,playerHeight);
     	}
     	g.setColor(Color.black);
     	g.drawRect(x, y-7, playerWidth, 5);
@@ -73,8 +75,6 @@ public class Player {
 		udpclient = Engine.udpclient;
 		ipaddress = udpclient.address;
 		port = udpclient.PORT;
-		
-		
 		Input input = gc.getInput();
 		speed = (float) 0.08;
 		bullet_interval += delta;
@@ -87,25 +87,25 @@ public class Player {
 		if (input.isKeyDown(Input.KEY_W)||input.isKeyDown(Input.KEY_UP)) {
 	        deltaY -= delta * speed;
 			image = Resources.getImage(tankColor, "up");
-			tank_face = 0;
+			tank_face = Constants.UP;
 			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.UP);
 		}
 		if (input.isKeyDown(Input.KEY_S)||input.isKeyDown(Input.KEY_DOWN)) {
 			deltaY += delta * speed;
 			image = Resources.getImage(tankColor, "down");
-			tank_face = 2;
+			tank_face = Constants.DOWN;
 			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.DOWN);
 		}
 		if (input.isKeyDown(Input.KEY_D)||input.isKeyDown(Input.KEY_RIGHT)) {
 			deltaX += speed*delta;
 			image = Resources.getImage(tankColor, "right");
-			tank_face = 3;
+			tank_face = Constants.RIGHT;
 			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.RIGHT);
 		}
 		if (input.isKeyDown(Input.KEY_A)||input.isKeyDown(Input.KEY_LEFT)) {
 			deltaX -= speed*delta;
 			image = Resources.getImage(tankColor, "left");
-			tank_face = 1;
+			tank_face = Constants.LEFT;
 			udpclient.send("MOV " + name + " " + deltaX + " " + deltaY + " " + Constants.LEFT);
 		}
 		
@@ -160,9 +160,14 @@ public class Player {
 		playerHealth++;
 	}
 	
+	public void setTankColor(String tankColor) {
+		//image = Resources.getImage(tankColor,"up");
+		this.tankColor = tankColor;
+	}
+	
 	public void setImage(String tankColor) {
 		image = Resources.getImage(tankColor,"up");
-		this.tankColor = tankColor;
+		//this.tankColor = tankColor;
 	}
 
 	public String getName(){

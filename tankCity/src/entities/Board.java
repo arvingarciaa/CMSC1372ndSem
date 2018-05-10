@@ -20,6 +20,8 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
+
 import entities.Bullet;
 import entities.Powerup;
 import states.States;
@@ -41,7 +43,7 @@ public class Board{
 	private float textWidth;
 	private String text;
 	private static int pause = 0;
-	private UDPclient udpclient;
+	private UDPclient udpclient = Engine.udpclient;
 	private TCPclient tcpclient;
 	private int x,y;
 	private Random rand = new Random();
@@ -49,12 +51,12 @@ public class Board{
 	public TextField textFieldChatInput;
 	private String playerName;
 	ArrayList<String> chatMessages;
-	private HashMap<String, Player> players = new HashMap<>();
+	private HashMap<String, Player> players;
 	private static Player player;
 	private static Powerup powerup;
 	private Image chatbg;
 	//map attributes
-	private ArrayList<ArrayList<Integer>> mapTemplate;
+	private ArrayList<ArrayList<Integer>> mapTemplate=null;
 	private int mapWidth;
 	private int mapHeight;
 	private static int INDESTRUCTIBLE = 1;
@@ -68,75 +70,14 @@ public class Board{
 		blocked = new boolean[Constants.WIDTH][Constants.HEIGHT];  // This will create an Array with all the Tiles in your map. When set to true, it means that Tile is blocked.
 		blocks = new ArrayList<Rectangle>();
 		
-		mapTemplate = new ArrayList<>();
-		createMapTemplate(new File("res/map1.txt"));
-		
-		destroyed = new boolean[mapWidth][mapHeight];
-		dest = new boolean[mapWidth][mapHeight];
-		
-		for(int i=0; i<mapHeight; i++){
-			for(int j=0; j<mapWidth; j++){
-				int cell = mapTemplate.get(i).get(j);
-				if(cell!=EMPTY) {
-					for(int n = 0; n<tileSize; n++) {
-						for(int m = 0; m<tileSize; m++) {
-							blocked[j*tileSize+m][i*tileSize+n] = true;
-							if(cell==DESTRUCTIBLE) {
-								dest[j][i] = true;	
-				            }
-						}
-					}//populate per pixel
-					blocks.add(new Rectangle(j*tileSize,i*tileSize,tileSize,tileSize));
-				}
-			}
-		}
-
-		//randomize x and y position of tank then check if blocked
-		do {
-			x = rand.nextInt(mapWidth);
-			y = rand.nextInt(mapHeight);
-		}while(mapTemplate.get(y).get(x)!=0);
-		player = new Player(playerName,x*tileSize+1,y*tileSize+1);
-		//player.setImage("PINK");
 	}
 	
-	public void createMapTemplate(File filename){
-		try(BufferedReader br = new BufferedReader(new FileReader(filename))){
-			String currLine;
-			while((currLine = br.readLine()) != null){
-				if(currLine.isEmpty())continue;
-				ArrayList<Integer> row = new ArrayList<>();
-				String[] values = currLine.trim().split(" ");
-				for(String string : values){
-					if(!string.isEmpty()){
-						int id = Integer.parseInt(string);
-						row.add(id);
-					}
-				}
-				mapTemplate.add(row);
-			}
-		}catch(IOException e){
-
-		}
-		//put destructibles
-		int destructibles = 50 + (int)(Math.random() * ((100 - 50) + 1));
-		for(int i = 0; i<destructibles; i++){
-			do {
-				x = rand.nextInt(20);
-				y = rand.nextInt(15);
-			}while(mapTemplate.get(y).get(x) != EMPTY);
-			mapTemplate.get(y).set(x,DESTRUCTIBLE);
-		}
-		mapWidth = mapTemplate.get(0).size();
-		mapHeight = mapTemplate.size();
-	}
 
 	public void render(GameContainer gc, StateBasedGame s, Graphics g) throws SlickException {
 
 		for(int i=0; i<mapHeight; i++){
 			for(int j=0; j<mapWidth; j++){
 				Integer cell = mapTemplate.get(i).get(j);
-				
 				if(cell==EMPTY) {
 					g.drawImage(asphalt, j*tileSize, i*tileSize, null);
 				}else if(cell==INDESTRUCTIBLE) {
@@ -149,15 +90,26 @@ public class Board{
 		
 		for(int x=0; x < mapWidth; x++) {
 			for(int y=0; y < mapHeight; y++) {
+				//Log.info(x+ " "+y);
 				if(destroyed[x][y] == true) {
 		            g.drawImage(asphalt, x*tileSize, y*tileSize, null);
 		       }
 			}
 		}
-		player.render(gc,g);	//renders the tank
-		for(Bullet b: player.bullets) {	//pre-renders the bullets
-			b.render(gc,g);
+//		player.render(gc,g);	//renders the tank
+//		for(Bullet b: player.bullets) {	//pre-renders the bullets
+//			b.render(gc,g);
+//		}
+		Object[] tanks = players.keySet().toArray();
+		for(int n=0; n<players.size();n++) {
+			Player tank = players.get(tanks[n]);
+			tank.setImage(tank.tankColor);
+			tank.render(gc, g);
+			for(Bullet b: player.bullets) {	//pre-renders the bullets
+				b.render(gc,g);
+			}
 		}
+		
 		if (pause%2==1)		// to see scores
 		{
 		    Rectangle rect = new Rectangle (0, 0, 640, 480);
@@ -212,6 +164,48 @@ public class Board{
 	public void update(GameContainer gc, StateBasedGame s, int delta) throws SlickException {
 		tcpclient = Engine.tcpclient;
 		udpclient = Engine.udpclient;
+		players =  Engine.udpclient.getPlayers();
+		
+		if(mapTemplate==null) {
+			mapTemplate = udpclient.mapTemplate;
+			mapWidth = mapTemplate.get(0).size();
+			mapHeight = mapTemplate.size();
+			destroyed = new boolean[mapWidth][mapHeight];
+			dest = new boolean[mapWidth][mapHeight];
+			for(int i=0; i<mapHeight; i++){
+				for(int j=0; j<mapWidth; j++){
+					int cell = mapTemplate.get(i).get(j);
+					if(cell!=EMPTY) {
+						for(int n = 0; n<tileSize; n++) {
+							for(int m = 0; m<tileSize; m++) {
+								blocked[j*tileSize+m][i*tileSize+n] = true;
+								if(cell==DESTRUCTIBLE) {
+									dest[j][i] = true;	
+					            }
+							}
+						}//populate per pixel
+						blocks.add(new Rectangle(j*tileSize,i*tileSize,tileSize,tileSize));
+					}
+				}
+			}
+			if (players != null) {
+				Object[] items = players.keySet().toArray();
+				for(int i=0; i<players.size();i++) {
+					if(items[i].toString().equals(udpclient.getPlayerName())) {
+						player = players.get(items[i].toString());
+					}
+					Log.info(players.get(items[i].toString()).toString());
+				}
+			}
+		}
+		
+		Object[] tanks = players.keySet().toArray();
+		for(int n=0; n<players.size();n++) {
+			Player tank = players.get(tanks[n]);
+			tank.update(gc, delta);
+		}
+		
+//		Log.info(mapTemplate.get(0).size()+ " "+mapTemplate.size());
 		//get the chat messages
 		chatMessages = tcpclient.getMessages();
 		chatbg = Resources.getImage("chatbg");

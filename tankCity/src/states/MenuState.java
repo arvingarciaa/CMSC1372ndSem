@@ -72,7 +72,7 @@ public class MenuState extends BasicGameState{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s.enterState(States.GAME);
+				s.enterState(States.WAIT);
 			}
 		} else if ((posX > 257 && posX < 414) && (posY > 159 && posY < 199)) {
 			if (Mouse.isButtonDown(0)) {

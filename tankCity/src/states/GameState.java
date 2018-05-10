@@ -50,31 +50,17 @@ public class GameState extends BasicGameState{
 	private static int pause = 0;
 	private UDPclient udpclient;
 	private TCPclient tcpclient;
-	private int x,y;
-	private Random rand = new Random();
 	public static boolean[][] destroyed;
 	private TextField textFieldChatInput;
-	private String playerName;
 	ArrayList<String> chatMessages;
-	private HashMap<String, Player> players = new HashMap<>();
-	private static Player player;
 	boolean boardAtStart = false;
 	private static Powerup powerup;
-	private Image chatbg;
-	
-	private ArrayList<ArrayList<Integer>> mapTemplate;
-	private int mapWidth;
-	private int mapHeight;
-	private static int INDESTRUCTIBLE = 1;
-	private static int EMPTY = 0;
-	private static int DESTRUCTIBLE = 2;
 	private Board board;
-	
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame s) throws SlickException {
-		board  = new Board(); 
 		font = getNewFont("Arial", 48);
+		board  = new Board(); 
 		board.textFieldChatInput = new TextField(gc, gc.getDefaultFont(), 0, Constants.TOTAL_HEIGHT-25, Constants.WIDTH, 25);
 	}
 	

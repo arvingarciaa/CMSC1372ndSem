@@ -17,7 +17,8 @@ public class Servers {
 			try {
 				new Servers(Integer.parseInt(args[0]));
 			} catch(Exception e) {
-				System.err.println("Argument not an integer.");
+//				System.err.println("Argument not an integer.");
+				e.printStackTrace();
 			}
 		} else {
 			System.err.println("Please include port number.");

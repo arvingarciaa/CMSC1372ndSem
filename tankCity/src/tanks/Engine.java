@@ -34,10 +34,10 @@ public class Engine extends StateBasedGame{
 	}
 	
 	public static void createConnection (String name, InetAddress clientAddress, int clientport) {
-		udpclient = new UDPclient(name, clientAddress, clientport);
-		udpclient.start();
 		tcpclient = new TCPclient(name, clientAddress, clientport);
 		tcpclient.start();
+		udpclient = new UDPclient(name, clientAddress, clientport);
+		udpclient.start();		
 	}	
 
 	@Override

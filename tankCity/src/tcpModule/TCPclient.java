@@ -34,8 +34,6 @@ public class TCPclient extends Thread {
 			System.out.println(e.toString());
 			System.exit(MAX_PRIORITY);
 		}
-		
-		this.sendToServer("CONNECT " + this.name + "\n");
 	}
 	
 	public void sendToServer(String data) {
@@ -50,7 +48,7 @@ public class TCPclient extends Thread {
 	//continues reading of the server's messages
 //	@SuppressWarnings("deprecation")
 	@Override
-	public void run() {		
+	public void run() {
 		while (true) {
 			while(this.clientBufferedReader != null) {
 				try {

@@ -11,6 +11,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import tanks.Constants;
 import tanks.Engine;
@@ -69,9 +70,12 @@ public class WaitState extends BasicGameState{
 	}
 
 	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int delta) throws SlickException {
+	public void update(GameContainer g, StateBasedGame s, int delta) throws SlickException {
 		timer+=delta;
-//		
+		//check if the players are complete	
+		udpclient = Engine.udpclient;
+//		Log.info(String.valueOf(udpclient.checkGameStart()));
+		if (udpclient.checkGameStart()) s.enterState(States.GAME);
 	}
 
 }

@@ -24,6 +24,7 @@ public class TCPserver extends Thread {
 	//thread for accepting connection from clients
 	@Override
     public void run() {
+		Log.info(" TCPserver started...");
 		while (this.serverSocket != null) {
             try {
 				Socket clientSocket = this.serverSocket.accept();
@@ -39,7 +40,7 @@ public class TCPserver extends Thread {
 	            	String msg = "";
 //	            	check if the user name is already used
 	            	if (this.clientOutputStreams.get(clientName) == null) {
-	            		data = clientName + " joined the game.\n";
+	            		data = clientName + " has joined the game.";
 		            	this.sendToClients(data);
 		            	this.clientOutputStreams.put(clientName, clientOutputStream);
 		            	msg = "You successfully joined the game " + clientName + ".\n";
@@ -74,7 +75,7 @@ public class TCPserver extends Thread {
 		for(int i=0; i<this.clientOutputStreams.size(); i++) {
 			if(this.clientOutputStreams.get(clientNames[i]) != null) {
 				try {
-					this.clientOutputStreams.get(clientNames[i]).write(data.getBytes());
+					this.clientOutputStreams.get(clientNames[i]).write((data+"\n").getBytes());
 				} catch (IOException e) {
 					System.out.println("Error 4: "+e.toString());
 //					System.exit(MAX_PRIORITY);
@@ -115,11 +116,11 @@ class InputReader extends Thread {
 	            do {
 	            	data = this.clientBufferedReader.readLine();
 	            	if(data != null && data.length() > 0) 
-	            		this.serverSocket.sendToClients(data+"\n");
+	            		this.serverSocket.sendToClients(data);
 	            } while (data != null);
 			}
 	        catch(Exception e) {
-	        	String data = clientName+" disconnected.\n";
+	        	String data = clientName+" disconnected.";
 	        	this.serverSocket.deleteClient(clientName);
 	        	this.serverSocket.sendToClients(data);
 	        	Thread.currentThread().stop();
